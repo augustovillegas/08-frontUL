@@ -9,6 +9,7 @@ import { BiMenuAltRight } from "react-icons/bi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { buildApiUrl } from "./config/api";
+import { ApiLoader } from "./components/ApiLoader";
 
 import "./tailwind.css";
 
@@ -16,6 +17,7 @@ export const App = () => {
   const [activeLink, setActiveLink] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSetActive = (to) => {
     setActiveLink(to);
@@ -45,6 +47,7 @@ export const App = () => {
 
   // Función que maneja el envío del formulario
   const onSubmit = async (data) => {
+    setIsSubmitting(true);
     console.log("Datos del formulario:", data);
     const formData = new FormData();
 
@@ -75,6 +78,8 @@ export const App = () => {
         error.response ? error.response.data : error.message
       );
       toast.error("Error al enviar el mensaje");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -304,10 +309,14 @@ export const App = () => {
             )}
             <button
               type="submit"
+              disabled={isSubmitting}
               className="bg-green-color/80 text-black font-bold py-5 px-14 mx-auto cursor-pointer hover:bg-green-color duration-300"
             >
               Enviar
             </button>
+            {isSubmitting && (
+              <ApiLoader className="py-2" message="Espera mientras se conecta el servidor y se envía tu mensaje..." />
+            )}
           </form>
         </section>
 

@@ -6,6 +6,7 @@ import { BiSolidArrowToLeft, BiSolidArrowToRight } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
 import { DownloadAffiliates } from "../utils/DownloadAffiliates";
 import { buildApiUrl } from "../config/api";
+import { ApiLoader } from "./ApiLoader";
 
 export const Affiliates = () => {
   const [afiliados, setAfiliados] = useState([]);
@@ -96,6 +97,7 @@ export const Affiliates = () => {
       </div>
 
       <div className="bg-secondary-100 px-8 py-5 rounded-xl">
+        {loading && <ApiLoader className="py-6" />}
         {/* Encabezado */}
         <div className="hidden md:grid grid-cols-5 gap-4 mb-2 p-2">
           <h5>Acción</h5>

@@ -5,6 +5,7 @@ import { AiOutlineEye } from "react-icons/ai"; // Icono para ver detalles
 import { BiSolidArrowToLeft, BiSolidArrowToRight } from "react-icons/bi";
 import { MessageCard } from "./MessageCard"; // Importamos el componente MessageCard
 import { buildApiUrl } from "../config/api";
+import { ApiLoader } from "./ApiLoader";
 
 export const Messages = () => {
   const [mensajes, setMensajes] = useState([]);
@@ -51,6 +52,7 @@ export const Messages = () => {
       </div>
 
       <div className="bg-secondary-100 px-4 py-5 rounded-xl">
+        {loading && <ApiLoader className="py-6" />}
         {/* Encabezado */}
         <div className="hidden md:grid grid-cols-[1fr,2fr,3fr,3fr] gap-4 mb-2 p-2">
           <h5>Fecha</h5>

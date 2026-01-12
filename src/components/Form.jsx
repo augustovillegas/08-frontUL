@@ -13,6 +13,7 @@ import { useDropzone } from "react-dropzone";
 import { IoCloseSharp } from "react-icons/io5";
 import { BiMenuAltRight } from "react-icons/bi";
 import { buildApiUrl } from "../config/api";
+import { ApiLoader } from "./ApiLoader";
 
 export const Form = () => {
   const [activeLink, setActiveLink] = useState("");
@@ -20,6 +21,7 @@ export const Form = () => {
   const [fotosDni, setFotosDni] = useState([]);
   const [firma, setFirma] = useState(null);
   const [uploadError, setUploadError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSetActive = (to) => {
     setActiveLink(to);
@@ -87,6 +89,7 @@ export const Form = () => {
 
   // Función que maneja el envío del formulario
   const onSubmit = async (data) => {
+    setIsSubmitting(true);
     console.log("Datos del formulario:", data);
     const formData = new FormData();
     formData.append("nombre", data.nombre);
@@ -135,6 +138,8 @@ export const Form = () => {
         error.response ? error.response.data : error.message
       );
       toast.error("Error al enviar el mensaje");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -656,11 +661,15 @@ export const Form = () => {
                 <div className="flex justify-center items-center w-full col-span-3">
                   <button
                     type="submit"
+                    disabled={isSubmitting}
                     className="flex justify-center items-center bg-green-color py-5 px-14 mx-auto cursor-pointer hover:bg-green-700 text-white font-bold  rounded focus:outline-none focus:shadow-outline"
                   >
                     Enviar
                   </button>
                 </div>
+                {isSubmitting && (
+                  <ApiLoader className="py-2" message="Espera mientras se conecta el servidor y se envía tu solicitud..." />
+                )}
               </div>
             </form>
           </div>
