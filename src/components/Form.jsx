@@ -9,6 +9,7 @@ import { RiUser2Fill, RiMailFill } from "react-icons/ri";
 import { HiMiniIdentification } from "react-icons/hi2";
 import { IoLocation } from "react-icons/io5";
 import { FaPhoneSquareAlt } from "react-icons/fa";
+import { MdOutlinePhotoLibrary } from "react-icons/md";
 import { useDropzone } from "react-dropzone";
 import { IoCloseSharp } from "react-icons/io5";
 import { BiMenuAltRight } from "react-icons/bi";
@@ -22,6 +23,7 @@ export const Form = () => {
   const [firma, setFirma] = useState(null);
   const [uploadError, setUploadError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [signatureResetKey, setSignatureResetKey] = useState(0);
 
   const handleSetActive = (to) => {
     setActiveLink(to);
@@ -34,6 +36,8 @@ export const Form = () => {
 
   // Inicializa el formulario con useForm
   const methods = useForm({
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: {
       nombre: "",
       dni: "",
@@ -58,10 +62,30 @@ export const Form = () => {
     handleSubmit,
     formState: { errors },
     watch,
+    setFocus,
     setValue,
     reset,
     trigger,
+    getFieldState,
   } = methods;
+
+  const registerWithFocus = (name, options) => {
+    const field = register(name, options);
+
+    return {
+      ...field,
+      onBlur: async (event) => {
+        field.onBlur(event);
+        await trigger(name);
+        if (getFieldState(name).invalid) {
+          setFocus(name);
+        }
+      },
+    };
+  };
+
+  const emojiRegex = /[\uD800-\uDBFF][\uDC00-\uDFFF]/;
+  const hasEmoji = (value) => emojiRegex.test(String(value || ""));
 
   // Manejo de dropzone para fotosDni
   const onDropFotosDni = useCallback(
@@ -132,6 +156,7 @@ export const Form = () => {
       reset(); // Limpia el formulario
       setFotosDni(null); // Limpia el estado de fotoDni
       setFirma(null); // Limpia el estado de firma
+      setSignatureResetKey((prev) => prev + 1);
     } catch (error) {
       console.error(
         "Error al crear afiliado:",
@@ -211,11 +236,11 @@ export const Form = () => {
           </nav>
         </header>
 
-        <div className="relative z-30 flex flex-col items-center p-1 w-full  sm:max-w-[90%] md:max-w-[70%] lg:max-w-[45%] xl:max-w-[40%] mx-auto rounded-lg bg-secondary-100 mb-5">
+        <div className="relative z-30 flex flex-col items-center p-1 w-full sm:max-w-[95%] md:max-w-[90%] lg:max-w-[75%] xl:max-w-[70%] 2xl:max-w-[60%] mx-auto rounded-lg bg-secondary-100 mb-5">
           <div className="w-full mx-auto p-1 rounded-xl">
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="gap-8 px-3 py-3 rounded-lg"
+              className="grid grid-cols-1 md:grid-cols-2 gap-6 px-3 py-3 rounded-lg"
             >
               <h2 className="bg-primary uppercase px-2 py-4 text-3xl text-center text-white mb-3 rounded-md col-span-2 ">
                 Inscripción de afiliados
@@ -232,20 +257,22 @@ export const Form = () => {
                     Nombre completo
                   </label>
                   <input
-                    className="w-full md:w-5/6 lg:w-5/6 xl:w-7/10 border-b border-primary bg-secondary-100 px-8 py-3 focus-input-2"
+                    className="w-full border-b border-primary bg-secondary-100 px-8 py-3 focus-input-2"
                     id="nombre"
                     type="text"
                     placeholder="Pedro Gimenez"
-                    {...register("nombre", {
+                    {...registerWithFocus("nombre", {
                       required: "Nombre es requerido.",
                       minLength: {
                         value: 2,
                         message: "Nombre debe tener al menos dos caracteres",
                       },
                       maxLength: {
-                        value: 20,
-                        message: "Nombre debe tener máximo 20 caracteres",
+                        value: 60,
+                        message: "Nombre debe tener maximo 60 caracteres",
                       },
+                      validate: (value) =>
+                        !hasEmoji(value) || "No se permiten emoticones",
                     })}
                   />
                 </div>
@@ -266,24 +293,26 @@ export const Form = () => {
                     Documento de identidad
                   </label>
                   <input
-                    className="w-full md:w-5/6 lg:w-5/6 xl:w-7/10 border-b border-primary bg-secondary-100 px-8 py-3 focus-input-2"
+                    className="w-full border-b border-primary bg-secondary-100 px-8 py-3 focus-input-2"
                     id="dni"
                     type="text"
                     placeholder="28XXX123"
-                    {...register("dni", {
+                    {...registerWithFocus("dni", {
                       required: "DNI es requerido.",
                       pattern: {
-                        value: /^[0-9]+$/,
-                        message: "DNI solo debe contener números",
+                        value: /^[0-9.\s-]+$/,
+                        message: "DNI solo debe contener numeros, puntos o guiones",
                       },
                       minLength: {
-                        value: 7,
-                        message: "DNI debe tener al menos 7 caracteres",
+                        value: 6,
+                        message: "DNI debe tener al menos 6 caracteres",
                       },
                       maxLength: {
-                        value: 8,
-                        message: "DNI debe tener máximo 8 caracteres",
+                        value: 12,
+                        message: "DNI debe tener maximo 12 caracteres",
                       },
+                      validate: (value) =>
+                        !hasEmoji(value) || "No se permiten emoticones",
                     })}
                   />
                 </div>
@@ -304,17 +333,19 @@ export const Form = () => {
                     Correo electrónico
                   </label>
                   <input
-                    className="w-full md:w-3/4 lg:w-5/6 xl:w-7/10 border-b border-primary bg-secondary-100 px-8 py-3 focus-input-2"
+                    className="w-full border-b border-primary bg-secondary-100 px-8 py-3 focus-input-2"
                     id="correo"
                     type="email"
                     placeholder="pedrog@email.com"
-                    {...register("correo", {
+                    {...registerWithFocus("correo", {
                       required: "Correo es requerido.",
                       pattern: {
                         value:
                           /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-                        message: "Correo no válido",
+                        message: "Correo no valido",
                       },
+                      validate: (value) =>
+                        !hasEmoji(value) || "No se permiten emoticones",
                     })}
                   />
                 </div>
@@ -336,7 +367,7 @@ export const Form = () => {
                   className="px-2 py-3 border-b border-primary bg-secondary-100 focus-input-2"
                   id="fechaNacimiento"
                   type="date"
-                  {...register("fechaNacimiento", {
+                  {...registerWithFocus("fechaNacimiento", {
                     required: "Fecha de nac. es requerida.",
                     validate: (value) => {
                       const fechaNacimiento = new Date(value);
@@ -365,11 +396,11 @@ export const Form = () => {
                 <div className="relative">
                   <IoLocation className="absolute top-1/2 left-2 transform -translate-y-1/2 -mt-1" />
                   <input
-                    className="w-full md:w-3/4 lg:w-5/6 xl:w-7/10 border-b border-primary bg-secondary-100 px-8 py-4 focus-input-2"
+                    className="w-full border-b border-primary bg-secondary-100 px-8 py-4 focus-input-2"
                     id="domicilio"
                     type="text"
                     placeholder="Calle Publica 823"
-                    {...register("domicilio", {
+                    {...registerWithFocus("domicilio", {
                       required: "Domicilio es requerido.",
                       minLength: {
                         value: 5,
@@ -378,8 +409,10 @@ export const Form = () => {
                       },
                       maxLength: {
                         value: 50,
-                        message: "Domicilio debe tener máximo 50 caracteres",
+                        message: "Domicilio debe tener maximo 50 caracteres",
                       },
+                      validate: (value) =>
+                        !hasEmoji(value) || "No se permiten emoticones",
                     })}
                   />
                 </div>
@@ -401,24 +434,26 @@ export const Form = () => {
                     Celular
                   </label>
                   <input
-                    className="w-full md:w-3/4 lg:w-5/6 xl:w-7/10 border-b border-primary bg-secondary-100 px-8 py-4 focus-input-2"
+                    className="w-full border-b border-primary bg-secondary-100 px-8 py-4 focus-input-2"
                     id="celular"
                     type="text"
                     placeholder="(383)-154345656"
-                    {...register("celular", {
+                    {...registerWithFocus("celular", {
                       required: "Celular es requerido.",
                       pattern: {
-                        value: /^[0-9]+$/,
-                        message: "Celular solo debe contener números",
+                        value: /^[0-9+\s()-]+$/,
+                        message: "Celular solo debe contener numeros y simbolos basicos",
                       },
                       minLength: {
-                        value: 10,
-                        message: "Celular debe tener al menos 10 caracteres",
+                        value: 7,
+                        message: "Celular debe tener al menos 7 caracteres",
                       },
                       maxLength: {
-                        value: 15,
-                        message: "Celular debe tener máximo 15 caracteres",
+                        value: 20,
+                        message: "Celular debe tener maximo 20 caracteres",
                       },
+                      validate: (value) =>
+                        !hasEmoji(value) || "No se permiten emoticones",
                     })}
                   />
                 </div>
@@ -438,7 +473,7 @@ export const Form = () => {
                 </label>
                 <select
                   id="pais"
-                  {...register("pais", {
+                  {...registerWithFocus("pais", {
                     required: "Nacionalidad es requerida.",
                   })}
                   className="mt-1 block w-full px-4 py-2 bg-secondary-100 text-white border border-white rounded-md shadow-sm focus:border-primary focus:ring focus:ring-white-200 focus:ring-opacity-50"
@@ -462,7 +497,7 @@ export const Form = () => {
                     </label>
                     <select
                       id="provincia"
-                      {...register("provincia", {
+                      {...registerWithFocus("provincia", {
                         required: "Provincia es requerida.",
                       })}
                       className="mt-1 block w-full px-4 py-2 bg-secondary-100 text-white border border-white rounded-md shadow-sm focus:border-primary focus:ring focus:ring-white-200 focus:ring-opacity-50"
@@ -489,7 +524,7 @@ export const Form = () => {
                         </label>
                         <select
                           id="departamento"
-                          {...register("departamento", {
+                          {...registerWithFocus("departamento", {
                             required: "Departamento es requerido.",
                           })}
                           className="mt-1 block w-full px-4 py-2 bg-secondary-100 text-white border border-white rounded-md shadow-sm focus:border-primary focus:ring focus:ring-white-200 focus:ring-opacity-50"
@@ -538,7 +573,7 @@ export const Form = () => {
                 </label>
                 <select
                   id="estadoCivil"
-                  {...register("estadoCivil", {
+                  {...registerWithFocus("estadoCivil", {
                     required: "Estado civil es requerido.",
                   })}
                   className="mt-1 block w-full px-4 py-2 bg-secondary-100 text-white border border-white rounded-md shadow-sm focus:border-primary focus:ring focus:ring-white-200 focus:ring-opacity-50"
@@ -567,7 +602,7 @@ export const Form = () => {
                 </label>
                 <select
                   id="ocupacion"
-                  {...register("ocupacion", {
+                  {...registerWithFocus("ocupacion", {
                     required: "Ocupación es requerida.",
                   })}
                   className="mt-1 block w-full px-4 py-2 bg-secondary-100 text-white border border-white rounded-md shadow-sm focus:border-primary focus:ring focus:ring-white-200 focus:ring-opacity-50"
@@ -591,7 +626,7 @@ export const Form = () => {
               </div>
 
               <div
-                className="mb-2"
+                className="col-span-2 mb-2"
                 {...getRootPropsFotosDni()}
                 style={{
                   border: "2px dashed #ccc",
@@ -609,9 +644,12 @@ export const Form = () => {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-gray-500 text-sm">
-                    Arrastra la foto del DNI aquí o haz clic para seleccionar
-                  </p>
+                  <div className="flex flex-col items-center gap-2 text-gray-500 text-sm">
+                    <MdOutlinePhotoLibrary className="text-3xl text-gray-400" />
+                    <p>
+                      Arrastra la foto del DNI aqui o haz clic para seleccionar
+                    </p>
+                  </div>
                 )}
               </div>
 
@@ -631,7 +669,7 @@ export const Form = () => {
                 <input
                   id="aceptaTerminos"
                   type="checkbox"
-                  {...register("aceptaTerminos", {
+                  {...registerWithFocus("aceptaTerminos", {
                     required: "Debe aceptar los términos y condiciones.",
                   })}
                   className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
@@ -651,6 +689,7 @@ export const Form = () => {
               <div className="flex flex-col items-center w-full col-span-2 gap-4">
                 <div className="w-full">
                   <SignatureForm
+                    resetKey={signatureResetKey}
                     register={register}
                     errors={errors}
                     setValue={setValue}
@@ -680,3 +719,7 @@ export const Form = () => {
     </FormProvider>
   );
 };
+
+
+
+

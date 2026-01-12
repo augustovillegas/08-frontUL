@@ -41,7 +41,7 @@ export const Messages = () => {
     };
 
     obtenerMensajes();
-  }, [pagina, mensajes]); // Volver a ejecutar cuando cambie la página
+  }, [pagina]); // Volver a ejecutar cuando cambie la página
 
   const totalPaginas = Math.ceil(totalMensajes / limite); // Número total de páginas
 
@@ -171,3 +171,4 @@ export const Messages = () => {
     </div>
   );
 };
+

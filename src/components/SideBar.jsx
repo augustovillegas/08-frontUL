@@ -19,7 +19,7 @@ export const SideBar = () => {
   return (
     <>
       <div
-        className={`xl:h-[100vh] overflow-y-scroll fixed xl:static w-[65%] md:w-[40%] lg:w-[30%] xl:w-auto h-full top-0 bg-secondary-100 p-4 flex flex-col justify-between z-50 ${
+        className={`xl:h-[100vh] fixed xl:static w-[65%] md:w-[40%] lg:w-[30%] xl:w-auto h-full top-0 bg-secondary-100 p-4 flex flex-col justify-between z-50 ${
           showMenu ? "left-0" : "-left-full"
         } transition-all`}
       >
@@ -65,7 +65,7 @@ export const SideBar = () => {
                 </li>
                 <li>
                   <Link
-                    to="/"
+                    to="/admin/social-statistic"
                     className="py-2 px-4 border-l border-gray-500 ml-6 block relative before:w-3 before:h-3 before:absolute before:bg-gray-500 before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary-100 hover:text-primary transition-colors"
                   >
                     Social Statistic
@@ -73,7 +73,7 @@ export const SideBar = () => {
                 </li>
                 <li>
                   <Link
-                    to=""
+                    to="/admin/seguidores"
                     className="py-2 px-4 border-l border-gray-500 ml-6 block relative before:w-3 before:h-3 before:absolute before:bg-gray-500 before:rounded-full before:-left-[6.5px] before:top-1/2 before:-translate-y-1/2 before:border-4 before:border-secondary-100 hover:text-primary transition-colors"
                   >
                     Seguidores

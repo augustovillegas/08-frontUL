@@ -42,7 +42,7 @@ export const Affiliates = () => {
     };
 
     obtenerAfiliados();
-  }, [pagina, afiliados]); // Volver a ejecutar cuando cambie la página
+  }, [pagina]); // Volver a ejecutar cuando cambie la página
 
   // Filtrar afiliados según el término de búsqueda en múltiples campos
   const filteredAffiliados = afiliados.filter((afiliado) => {
@@ -97,7 +97,6 @@ export const Affiliates = () => {
       </div>
 
       <div className="bg-secondary-100 px-8 py-5 rounded-xl">
-        {loading && <ApiLoader className="py-6" />}
         {/* Encabezado */}
         <div className="hidden md:grid grid-cols-5 gap-4 mb-2 p-2">
           <h5>Acción</h5>
@@ -107,6 +106,7 @@ export const Affiliates = () => {
           <h5>Contacto</h5>
         </div>
 
+        {loading && <ApiLoader className="py-6" />}
         {/* Listado de afiliados filtrados */}
         {filteredAffiliados.map((afiliado) => (
           <div
@@ -194,3 +194,4 @@ export const Affiliates = () => {
     </div>
   );
 };
+

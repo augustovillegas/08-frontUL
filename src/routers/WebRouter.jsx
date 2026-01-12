@@ -14,6 +14,8 @@ import { Profile } from "../admin/Profile";
 import { Messages } from "../components/Messages";
 import { Analitycs } from "../components/Analitycs";
 import { Affiliates } from "../components/Affiliates";
+import { SocialStatistic } from "../components/SocialStatistic";
+import { Followers } from "../components/Followers";
 import ScrollToTop from "react-scroll-to-top";
 import { FaAngleDoubleUp } from "react-icons/fa";
 import { Mailing } from "../components/Mailing";
@@ -62,6 +64,8 @@ export const WebRouter = () => {
             <Route path="analiticas" element={<Analitycs />} />
             <Route path="afiliados" element={<Affiliates />} />
             <Route path="mailing" element={<Mailing />} />
+            <Route path="social-statistic" element={<SocialStatistic />} />
+            <Route path="seguidores" element={<Followers />} />
           </Route>
 
           <Route path="/afiliarme" element={<Form />} />

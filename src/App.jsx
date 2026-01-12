@@ -30,6 +30,8 @@ export const App = () => {
 
   // Inicializa el formulario con useForm
   const methods = useForm({
+    mode: "onChange",
+    reValidateMode: "onChange",
     defaultValues: {
       nombre: "",
       correo: "", // Cambié "email" por "correo" para consistencia
@@ -43,7 +45,29 @@ export const App = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    trigger,
+    setFocus,
+    getFieldState,
   } = methods;
+
+  const registerWithFocus = (name, options) => {
+    const field = register(name, options);
+
+    return {
+      ...field,
+      onBlur: async (event) => {
+        field.onBlur(event);
+        await trigger(name);
+        if (getFieldState(name).invalid) {
+          setFocus(name);
+        }
+      },
+    };
+  };
+
+  const emojiRegex = /[\uD800-\uDBFF][\uDC00-\uDFFF]/;
+  const hasEmoji = (value) => emojiRegex.test(String(value || ""));
+
 
   // Función que maneja el envío del formulario
   const onSubmit = async (data) => {
@@ -274,7 +298,11 @@ export const App = () => {
               type="text"
               id="nombre"
               name="nombre"
-              {...register("nombre", { required: "El nombre es obligatorio" })} // Registra el campo con useForm
+              {...registerWithFocus("nombre", {
+                required: "El nombre es obligatorio",
+                validate: (value) =>
+                  !hasEmoji(value) || "No se permiten emoticones",
+              })} // Registra el campo con useForm
             />
             {errors.nombre && (
               <p className="text-red-500">{errors.nombre.message}</p>
@@ -284,12 +312,14 @@ export const App = () => {
               placeholder="Correo"
               type="email"
               id="correo"
-              {...register("correo", {
+              {...registerWithFocus("correo", {
                 required: "El correo es obligatorio",
                 pattern: {
                   value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
                   message: "El correo no es válido",
                 },
+                validate: (value) =>
+                  !hasEmoji(value) || "No se permiten emoticones",
               })} // Registra el campo con validaciones
             />
             {errors.email && (
@@ -299,8 +329,10 @@ export const App = () => {
               className="border px-4 py-6 min-w-full max-w-full w-full min-h-[100px] max-h-60 focus-input"
               placeholder="Mensaje"
               id="mensaje"
-              {...register("mensaje", {
+              {...registerWithFocus("mensaje", {
                 required: "El mensaje es obligatorio",
+                validate: (value) =>
+                  !hasEmoji(value) || "No se permiten emoticones",
               })} // Registra el campo textarea
               rows="4"
             ></textarea>
@@ -331,3 +363,6 @@ export const App = () => {
     </div>
   );
 };
+
+
+

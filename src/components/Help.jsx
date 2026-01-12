@@ -26,7 +26,7 @@ export const Help = () => {
               className="w-1/2 max-w-[280px] text-3xl font-bold uppercase"
               href="./"
             >
-              UNION LIBERTARIA.
+              DEMOCRATIK.
             </a>
 
             {/*<input className="peer/menu hidden" type="checkbox" id="menu" />*/}
@@ -81,11 +81,45 @@ export const Help = () => {
         </header>
       </div>
 
-      <h1 className="">¿ Donde podes encontrarnos ?</h1>
-      <p className="text-indigo-600 text-lg">
-        {" "}
-        Calle Marcelino de Aguiar 1000{" "}
-      </p>
+      <section className="mt-10">
+        <h2 className="text-2xl font-bold mb-4">Preguntas frecuentes</h2>
+        <div className="grid gap-4">
+          <div className="bg-secondary-100 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold">
+              Como me afilio a Democratik?
+            </h3>
+            <p className="text-gray-300 text-sm mt-2">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            </p>
+          </div>
+          <div className="bg-secondary-100 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold">
+              Que datos necesito para registrarme?
+            </h3>
+            <p className="text-gray-300 text-sm mt-2">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            </p>
+          </div>
+          <div className="bg-secondary-100 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold">
+              Como consulto el estado de mi solicitud?
+            </h3>
+            <p className="text-gray-300 text-sm mt-2">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            </p>
+          </div>
+          <div className="bg-secondary-100 p-4 rounded-lg">
+            <h3 className="text-lg font-semibold">
+              Donde puedo escribir si tengo problemas?
+            </h3>
+            <p className="text-gray-300 text-sm mt-2">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            </p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
+
+
