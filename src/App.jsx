@@ -322,8 +322,8 @@ export const App = () => {
                   !hasEmoji(value) || "No se permiten emoticones",
               })} // Registra el campo con validaciones
             />
-            {errors.email && (
-              <p className="text-red-500">{errors.email.message}</p>
+            {errors.correo && (
+              <p className="text-red-500">{errors.correo.message}</p>
             )}
             <textarea
               className="border px-4 py-6 min-w-full max-w-full w-full min-h-[100px] max-h-60 focus-input"
