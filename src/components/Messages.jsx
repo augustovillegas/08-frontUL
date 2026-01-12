@@ -52,7 +52,6 @@ export const Messages = () => {
       </div>
 
       <div className="bg-secondary-100 px-4 py-5 rounded-xl">
-        {loading && <ApiLoader className="py-6" />}
         {/* Encabezado */}
         <div className="hidden md:grid grid-cols-[1fr,2fr,3fr,3fr] gap-4 mb-2 p-2">
           <h5>Fecha</h5>
@@ -60,6 +59,7 @@ export const Messages = () => {
           <h5>Email</h5>
           <h5>Mensaje</h5>
         </div>
+        {loading && <ApiLoader className="py-6" />}
 
         {/* Listado de mensajes */}
         {mensajes.map((mensaje) => (

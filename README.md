@@ -26,6 +26,7 @@ Proyecto de frontend enfocado en la experiencia de afiliacion y administracion, 
 - Panel administrativo con metricas, listado de afiliados y mensajes.
 - Descarga de listados en formato Excel.
 - Loader visual cuando la API tarda en responder (servidor en reposo).
+- Interacciones UI con modales, menus, iconografia y notificaciones.
 
 ---
 
@@ -35,6 +36,10 @@ Proyecto de frontend enfocado en la experiencia de afiliacion y administracion, 
   <tr>
     <td><strong>UI</strong></td>
     <td>React, Tailwind CSS</td>
+  </tr>
+  <tr>
+    <td><strong>UX/UI</strong></td>
+    <td>react-icons, react-toastify, reactjs-popup, @szhsin/react-menu</td>
   </tr>
   <tr>
     <td><strong>Build</strong></td>
@@ -151,6 +156,19 @@ La interfaz usa la paleta del proyecto:
 - Violeta acento: `#9932CC`
 - Gris de texto: `#828282`
 - Fondo: `#171717`
+
+---
+
+## UI Kit
+
+Componentes reutilizables destacados:
+
+- Cards de metricas con iconos y crecimiento.
+- Loader con spinner para respuestas lentas de API.
+- Formularios con validacion en tiempo real.
+- Modal de firma digital.
+- Sidebar y menu superior con acciones de usuario.
+- Dropdowns y menus contextuales en panel admin.
 
 ---
 

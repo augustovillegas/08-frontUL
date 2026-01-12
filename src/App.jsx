@@ -339,16 +339,21 @@ export const App = () => {
             {errors.mensaje && (
               <p className="text-red-500">{errors.mensaje.message}</p>
             )}
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-green-color/80 text-black font-bold py-5 px-14 mx-auto cursor-pointer hover:bg-green-color duration-300"
-            >
-              Enviar
-            </button>
-            {isSubmitting && (
-              <ApiLoader className="py-2" message="Espera mientras se conecta el servidor y se envía tu mensaje..." />
-            )}
+            <div className="w-full flex flex-col items-center">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-green-color/80 text-black font-bold py-5 px-14 mx-auto cursor-pointer hover:bg-green-color duration-300"
+              >
+                Enviar
+              </button>
+              {isSubmitting && (
+                <ApiLoader
+                  className="py-2"
+                  message="Espera mientras se conecta el servidor y se envía tu mensaje..."
+                />
+              )}
+            </div>
           </form>
         </section>
 
