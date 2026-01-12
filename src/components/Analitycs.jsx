@@ -5,6 +5,7 @@ import { HiOutlineUserGroup } from "react-icons/hi2";
 import { AiFillTikTok } from "react-icons/ai";
 import { FaInstagram } from "react-icons/fa6";
 import { FaFacebook } from "react-icons/fa";
+import { buildApiUrl } from "../config/api";
 
 
 export const Analitycs = () => {
@@ -18,7 +19,7 @@ export const Analitycs = () => {
       setLoading(true);
       try {
         // Petición GET al backend para obtener el total de afiliados
-        const response = await axios.get("https://08-backul-production.up.railway.app/api/afiliados");
+        const response = await axios.get(buildApiUrl("/api/afiliados"));
         const { total } = response.data;
 
         setTotal(total); // Guardamos el número de afiliados

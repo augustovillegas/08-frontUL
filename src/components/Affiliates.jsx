@@ -5,6 +5,7 @@ import { IoMdArrowDropleft, IoMdArrowDropright } from "react-icons/io";
 import { BiSolidArrowToLeft, BiSolidArrowToRight } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
 import { DownloadAffiliates } from "../utils/DownloadAffiliates";
+import { buildApiUrl } from "../config/api";
 
 export const Affiliates = () => {
   const [afiliados, setAfiliados] = useState([]);
@@ -23,9 +24,9 @@ export const Affiliates = () => {
       try {
         // Petición GET al backend con paginación (limite y pagina)
         const response = await axios.get(
-          `https://08-backul-production.up.railway.app/api/afiliados?limite=${limite}&desde=${
-            pagina * limite
-          }`
+          buildApiUrl(
+            `/api/afiliados?limite=${limite}&desde=${pagina * limite}`
+          )
         );
         const { afiliados, total } = response.data;
 

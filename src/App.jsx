@@ -8,6 +8,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import { BiMenuAltRight } from "react-icons/bi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { buildApiUrl } from "./config/api";
 
 import "./tailwind.css";
 
@@ -55,7 +56,7 @@ export const App = () => {
     try {
       // Envío de datos al servidor
       const response = await axios.post(
-        "https://08-backul-production.up.railway.app/api/consultas",
+        buildApiUrl("/api/consultas"),
         formData,
         {
           headers: {

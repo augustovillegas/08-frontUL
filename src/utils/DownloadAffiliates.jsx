@@ -1,12 +1,13 @@
 import React from "react";
 import axios from "axios";
 import { TiDownloadOutline } from "react-icons/ti";
+import { buildApiUrl } from "../config/api";
 
 export const DownloadAffiliates = () => {
   const handleDownload = async () => {
     try {
       // Petición al backend para descargar el archivo Excel
-      const response = await axios.get("https://08-backul-production.up.railway.app/api/export", {
+      const response = await axios.get(buildApiUrl("/api/export"), {
         responseType: "blob", // Asegurarse de recibir el archivo como Blob
       });
 

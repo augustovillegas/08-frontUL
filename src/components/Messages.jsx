@@ -4,6 +4,7 @@ import { IoMdArrowDropright, IoMdArrowDropleft } from "react-icons/io";
 import { AiOutlineEye } from "react-icons/ai"; // Icono para ver detalles
 import { BiSolidArrowToLeft, BiSolidArrowToRight } from "react-icons/bi";
 import { MessageCard } from "./MessageCard"; // Importamos el componente MessageCard
+import { buildApiUrl } from "../config/api";
 
 export const Messages = () => {
   const [mensajes, setMensajes] = useState([]);
@@ -22,9 +23,9 @@ export const Messages = () => {
       try {
         // Petición GET al backend con paginación (limite y pagina)
         const response = await axios.get(
-          `https://08-backul-production.up.railway.app/api/consultas?limite=${limite}&desde=${
-            pagina * limite
-          }`
+          buildApiUrl(
+            `/api/consultas?limite=${limite}&desde=${pagina * limite}`
+          )
         );
         const { mensajes, total } = response.data;
 

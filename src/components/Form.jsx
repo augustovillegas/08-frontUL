@@ -12,6 +12,7 @@ import { FaPhoneSquareAlt } from "react-icons/fa";
 import { useDropzone } from "react-dropzone";
 import { IoCloseSharp } from "react-icons/io5";
 import { BiMenuAltRight } from "react-icons/bi";
+import { buildApiUrl } from "../config/api";
 
 export const Form = () => {
   const [activeLink, setActiveLink] = useState("");
@@ -114,7 +115,7 @@ export const Form = () => {
 
     try {
       const response = await axios.post(
-        "https://08-backul-production.up.railway.app/api/afiliados",
+        buildApiUrl("/api/afiliados"),
         formData,
         {
           headers: {
