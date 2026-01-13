@@ -12,12 +12,12 @@ export const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="bg-secondary-100 p-8 rounded-xl w-auto lg-w-[450px]">
-      <h1 className="text-3xl text-center uppercase text-white font-bold tracking-[3px] mb-8">
+    <div className="bg-secondary-100 w-full max-w-[440px] p-6 sm:p-8 md:p-10 rounded-xl">
+      <h1 className="text-2xl sm:text-3xl text-center uppercase text-white font-bold tracking-[3px] mb-6 sm:mb-8">
         Crear cuenta
       </h1>
-      <form className="mb-8">
-        <button className="flex items-center justify-center py-3 px-4 gap-2 bg-secondary-900 w-full rounded-full mb-8 text-gray-100">
+      <form className="mb-6 sm:mb-8">
+        <button className="flex items-center justify-center py-3 px-4 gap-2 bg-secondary-900 w-full rounded-full mb-6 sm:mb-8 text-gray-100 text-xs sm:text-sm">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -31,7 +31,7 @@ export const Register = () => {
           <RiUserLine className="absolute top-1/2 -translate-y-1/2 left-2" />
           <input
             type="text"
-            className="py-3 pl-8 pr-4 bg-secondary-900 w-full outline-none rounded-lg focus-input"
+            className="py-3 pl-8 pr-4 bg-secondary-900 w-full outline-none rounded-lg focus-input text-sm sm:text-base"
             placeholder="Nombre(s)"
           />
         </div>
@@ -39,7 +39,7 @@ export const Register = () => {
           <RiUserLine className="absolute top-1/2 -translate-y-1/2 left-2" />
           <input
             type="text"
-            className="py-3 pl-8 pr-4 bg-secondary-900 w-full outline-none rounded-lg focus-input"
+            className="py-3 pl-8 pr-4 bg-secondary-900 w-full outline-none rounded-lg focus-input text-sm sm:text-base"
             placeholder="Apellido(s)"
           />
         </div>
@@ -47,16 +47,16 @@ export const Register = () => {
           <RiMailFill className="absolute top-1/2 -translate-y-1/2 left-2" />
           <input
             type="email"
-            className="py-3 pl-8 pr-4 bg-secondary-900 w-full outline-none rounded-lg focus-input"
-            placeholder="Correo electrónico"
+            className="py-3 pl-8 pr-4 bg-secondary-900 w-full outline-none rounded-lg focus-input text-sm sm:text-base"
+            placeholder="Correo electronico"
           />
         </div>
         <div className="relative mb-4">
           <RiLockFill className="absolute top-1/2 -translate-y-1/2 left-2" />
           <input
             type={showPassword ? "text" : "password"}
-            className="py-3 pl-8 pr-4 bg-secondary-900 w-full outline-none rounded-lg focus-input"
-            placeholder="Contraseña"
+            className="py-3 pl-8 pr-4 bg-secondary-900 w-full outline-none rounded-lg focus-input text-sm sm:text-base"
+            placeholder="Contrasena"
           />
           {showPassword ? (
             <RiEyeOffFill
@@ -74,8 +74,8 @@ export const Register = () => {
           <RiLockFill className="absolute top-1/2 -translate-y-1/2 left-2" />
           <input
             type={showPassword ? "text" : "password"}
-            className="py-3 pl-8 pr-4 bg-secondary-900 w-full outline-none rounded-lg focus-input"
-            placeholder="Confirmar contraseña"
+            className="py-3 pl-8 pr-4 bg-secondary-900 w-full outline-none rounded-lg focus-input text-sm sm:text-base"
+            placeholder="Confirmar contrasena"
           />
           {showPassword ? (
             <RiEyeOffFill
@@ -92,14 +92,14 @@ export const Register = () => {
         <div>
           <button
             type="submit"
-            className="bg-primary uppercase font-bold text-xs w-full py-3 px-4 rounded-lg hover:text-black transition-colors"
+            className="bg-primary uppercase font-bold text-xs sm:text-sm w-full py-3 px-4 rounded-lg hover:text-black transition-colors"
           >
             Registrarme
           </button>
         </div>
       </form>
-      <span className="flex items-center justify-center gap-2">
-        ¿Ya tienes cuenta?{" "}
+      <span className="flex items-center justify-center gap-2 text-xs sm:text-sm">
+        Ya tienes cuenta?{" "}
         <Link
           to="/login"
           className="text-primary hover:text-primary/80 transition-colors"

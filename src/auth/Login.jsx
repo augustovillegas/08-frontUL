@@ -11,12 +11,12 @@ export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="bg-secondary-100 p-8 rounded-xl w-auto lg-w-[450px]">
-      <h1 className="text-3xl text-center uppercase text-white font-bold mb-8">
-        Iniciar Sesión
+    <div className="bg-secondary-100 w-full max-w-[440px] p-6 sm:p-8 md:p-10 rounded-xl">
+      <h1 className="text-2xl sm:text-3xl text-center uppercase text-white font-bold mb-6 sm:mb-8">
+        Iniciar Sesion
       </h1>
-      <form className="mb-8">
-        <button className="flex items-center justify-center py-3 px-4 gap-2 bg-secondary-900 w-full rounded-full mb-8 text-gray-100">
+      <form className="mb-6 sm:mb-8">
+        <button className="flex items-center justify-center py-3 px-4 gap-2 bg-secondary-900 w-full rounded-full mb-6 sm:mb-8 text-gray-100 text-xs sm:text-sm">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -30,16 +30,16 @@ export const Login = () => {
           <RiMailFill className="absolute top-1/2 -translate-y-1/2 left-2" />
           <input
             type="email"
-            className="py-3 pl-8 pr-4 bg-secondary-900 w-full outline-none rounded-lg focus-input"
-            placeholder="Correo electrónico"
+            className="py-3 pl-8 pr-4 bg-secondary-900 w-full outline-none rounded-lg focus-input text-sm sm:text-base"
+            placeholder="Correo electronico"
           />
         </div>
         <div className="relative mb-4">
           <RiLockFill className="absolute top-1/2 -translate-y-1/2 left-2" />
           <input
             type={showPassword ? "text" : "password"}
-            className="py-3 pl-8 pr-4 bg-secondary-900 w-full outline-none rounded-lg focus-input"
-            placeholder="Contraseña"
+            className="py-3 pl-8 pr-4 bg-secondary-900 w-full outline-none rounded-lg focus-input text-sm sm:text-base"
+            placeholder="Contrasena"
           />
           {showPassword ? (
             <RiEyeOffFill
@@ -56,18 +56,18 @@ export const Login = () => {
         <div>
           <button
             type="submit"
-            className="bg-primary uppercase font-bold text-xs w-full py-3 px-4 rounded-lg hover:text-black transition-colors"
+            className="bg-primary uppercase font-bold text-xs sm:text-sm w-full py-3 px-4 rounded-lg hover:text-black transition-colors"
           >
             Ingresar
           </button>
         </div>
       </form>
-      <div className="flex flex-col gap-4 items-center">
+      <div className="flex flex-col gap-4 items-center text-xs sm:text-sm">
         <Link to="/login/olvide-password" className="hover:text-primary transition-colors">
-          ¿Olvidaste tu contraseña?
+          Olvidaste tu contrasena?
         </Link>
         <span className="flex items-center gap-2">
-          ¿No tienes cuenta?
+          No tienes cuenta?
           <Link
             to="/login/registro"
             className="text-primary hover:text-primary/80 transition-colors"

@@ -20,6 +20,7 @@
     "@szhsin/react-menu": "^4.2.2",
     "axios": "^1.7.6",
     "cropperjs": "^1.6.2",
+    "markdown-pdf": "^11.0.0",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-cropper": "^2.3.3",

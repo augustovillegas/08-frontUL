@@ -210,7 +210,10 @@ export const App = () => {
               */}
           <ul className="fixed inset-0 bg-primary px-[5%] grid gap-6 auto-rows-max content-center justify-items-center clip-circle-0 peer-checked/menu:clip-circle-full transition-[clip-path] duration-500 md:clip-circle-full md:relative md:grid-flow-col md:p-0 md:bg-transparent cursor-pointer z-10">
             <li>
-              <RouterLink to="/">Inicio</RouterLink>
+              <RouterLink to="/login/registro">Registrarme</RouterLink>
+            </li>
+            <li>
+              <RouterLink to="/login">Iniciar sesion</RouterLink>
             </li>
             <li>
               <ScrollLink
