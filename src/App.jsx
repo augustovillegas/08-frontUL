@@ -80,9 +80,6 @@ export const App = () => {
     formData.append("correo", data.correo); // Usamos "correo" en vez de "email"
     formData.append("mensaje", data.mensaje);
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000);
-
     try {
       const endpoint = buildApiUrl("/api/consultas");
       console.log("[Contacto] Endpoint:", endpoint);
@@ -95,7 +92,6 @@ export const App = () => {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-          signal: controller.signal,
         }
       );
 
@@ -173,7 +169,6 @@ export const App = () => {
       });
       toast.error("Error al enviar el mensaje");
     } finally {
-      clearTimeout(timeoutId);
       setIsSubmitting(false);
     }
   };
