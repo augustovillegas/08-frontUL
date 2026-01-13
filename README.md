@@ -5,61 +5,152 @@
     Frontend web para la gestion de afiliaciones, consultas y panel administrativo.
   </p>
   <p>
-    <span style="color:#27AE60;font-weight:600;">React</span> |
-    <span style="color:#172554;font-weight:600;">Vite</span> |
-    <span style="color:#9932CC;font-weight:600;">Tailwind</span>
+    <img alt="React" src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=000" />
+    <img alt="Vite" src="https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=fff" />
+    <img alt="Tailwind" src="https://img.shields.io/badge/TailwindCSS-3-38B2AC?logo=tailwindcss&logoColor=fff" />
+  </p>
+  <p>
+    <a href="https://democratik.netlify.app/">Demo</a> ·
+    <a href="#-deployment">Deployment</a> ·
+    <a href="https://www.linkedin.com/in/augustovillegas/">LinkedIn</a>
+  </p>
+  <p>
+    <a href="#-tabla-de-contenidos">Indice rapido</a> ·
+    <a href="#-caracteristicas">Caracteristicas</a> ·
+    <a href="#-inicio-rapido">Inicio rapido</a>
   </p>
 </div>
 
 ---
 
-## Resumen
+## Tabla de Contenidos
 
-Proyecto de frontend enfocado en la experiencia de afiliacion y administracion, con formularios, carga de archivos, panel de mensajes y metricas. La aplicacion consume una API externa y contempla escenarios de "cold start" del servidor mediante un loader informativo para el usuario.
+- [Descripcion](#-descripcion)
+- [Caracteristicas](#-caracteristicas)
+- [Stack Tecnologico](#-stack-tecnologico)
+- [Inicio Rapido](#-inicio-rapido)
+- [Arquitectura](#-arquitectura)
+- [Estructura del Proyecto](#-estructura-del-proyecto)
+- [Componentes / Modulos Principales](#-componentes--modulos-principales)
+- [Validaciones](#-validaciones)
+- [API Integration / Endpoints](#-api-integration--endpoints)
+- [Scripts Disponibles](#-scripts-disponibles)
+- [Variables de Entorno](#-variables-de-entorno)
+- [Deployment](#-deployment)
+- [Guias de Uso](#-guias-de-uso)
+- [Personalizacion / Extension](#-personalizacion--extension)
+- [Contribuciones](#-contribuciones)
+- [Licencia](#-licencia)
 
 ---
 
-## Caracteristicas clave
+## Descripcion
 
-- Formulario de afiliacion con validaciones, firma y carga de DNI.
-- Formulario de contacto para consultas.
-- Panel administrativo con metricas, listado de afiliados y mensajes.
-- Descarga de listados en formato Excel.
-- Loader visual cuando la API tarda en responder (servidor en reposo).
-- Interacciones UI con modales, menus, iconografia y notificaciones.
+Democratik es un frontend SPA pensado para gestionar afiliaciones y consultas politicas, con un panel administrativo para seguimiento y metricas. El objetivo es centralizar el alta de afiliados, la atencion de mensajes y la visualizacion de indicadores en una UI clara y operativa.
+
+- Problema que resuelve: flujo de afiliacion y consulta en un solo canal, con administracion centralizada.
+- Para quien es: equipos politicos y administrativos que necesitan capturar y gestionar datos de afiliados.
+- Tipo de aplicacion: frontend web (SPA) consumiendo una API externa.
 
 ---
 
-## Tecnologias
+## Caracteristicas
+
+- [x] Formulario de afiliacion con validaciones, firma y carga de DNI.
+- [x] Formulario de contacto para consultas.
+- [x] Panel administrativo con metricas, listado de afiliados y mensajes.
+- [x] Descarga de listados en formato Excel.
+- [x] Loader informativo para escenarios de cold start del backend.
+- [x] UI con modales, menus, iconografia y notificaciones.
+
+---
+
+## Stack Tecnologico
 
 <table>
   <tr>
-    <td><strong>UI</strong></td>
-    <td>React, Tailwind CSS</td>
+    <th>Tecnologia</th>
+    <th>Proposito</th>
   </tr>
   <tr>
-    <td><strong>UX/UI</strong></td>
-    <td>react-icons, react-toastify, reactjs-popup, @szhsin/react-menu</td>
+    <td>React</td>
+    <td>UI basada en componentes y estado</td>
   </tr>
   <tr>
-    <td><strong>Build</strong></td>
     <td>Vite</td>
+    <td>Build rapido y servidor de desarrollo</td>
   </tr>
   <tr>
-    <td><strong>HTTP</strong></td>
+    <td>Tailwind CSS</td>
+    <td>Estilos utilitarios y consistencia visual</td>
+  </tr>
+  <tr>
     <td>Axios</td>
+    <td>Cliente HTTP para la API externa</td>
   </tr>
   <tr>
-    <td><strong>Routing</strong></td>
     <td>React Router</td>
+    <td>Navegacion y ruteo del SPA</td>
+  </tr>
+  <tr>
+    <td>react-toastify</td>
+    <td>Notificaciones y feedback de acciones</td>
   </tr>
 </table>
 
 ---
 
-## Estructura del proyecto
+## Inicio Rapido
 
+### Prerrequisitos
+
+- Node.js LTS
+- Yarn
+
+### Instalacion
+
+```bash
+yarn install
 ```
+
+### Desarrollo
+
+```bash
+yarn dev
+```
+
+### Build y preview
+
+```bash
+yarn build
+yarn preview
+```
+
+---
+
+## Arquitectura
+
+- SPA orientada a rutas con componentes desacoplados.
+- Separacion por dominios: admin, auth, components, layout, utils.
+- Integracion con API externa mediante un cliente HTTP centralizado.
+
+Flujo de datos (alto nivel):
+
+```text
+[Usuario]
+   |
+   v
+[UI React] -> [Axios Client] -> [API Externa]
+   ^                |              |
+   |                v              v
+[React Router]  [Validaciones]  [Respuestas/Errores]
+```
+
+---
+
+## Estructura del Proyecto
+
+```text
 src/
   admin/            Vistas del panel admin
   auth/             Pantallas de autenticacion
@@ -74,54 +165,56 @@ src/
 
 ---
 
-## Variables de entorno
+## Componentes / Modulos Principales
 
-Este proyecto usa variables de entorno de Vite. No incluyas credenciales reales en el repo.
+- `components/`:
+  - Loader de espera para cold start.
+  - Modales y notificaciones.
+- `admin/`:
+  - Vista de metricas y listados.
+  - Gestion de mensajes.
+- `auth/`:
+  - Pantallas de acceso (si aplica en el despliegue).
+- `config/`:
+  - Cliente de API y configuracion base.
 
-```
-VITE_API_BASE_URL=https://api.example.com
-```
+---
 
-Archivo recomendado para desarrollo local:
+## Validaciones
 
-```
-.env.local
+- Formularios con validacion de campos obligatorios y formato.
+- Feedback inmediato en UI con mensajes de error y notificaciones.
+- Control de estados de carga para prevenir duplicados.
+
+---
+
+## API Integration / Endpoints
+
+> Nota: completar rutas reales segun el backend publicado.
+
+| Metodo | Endpoint | Proposito |
+| --- | --- | --- |
+| POST | /afiliaciones | Alta de afiliados |
+| POST | /contacto | Envio de consultas |
+| GET | /admin/afiliados | Listado de afiliados |
+| GET | /admin/mensajes | Listado de mensajes |
+
+Modelo de datos (referencial):
+
+```ts
+type ContactoPayload = {
+  nombre: string;
+  email: string;
+  telefono?: string;
+  mensaje: string;
+};
 ```
 
 ---
 
-## Instalacion y ejecucion
+## Scripts Disponibles
 
-Requisitos:
-
-- Node.js LTS
-- Yarn
-
-Pasos:
-
-```
-yarn install
-yarn dev
-```
-
-Build y preview:
-
-```
-yarn build
-yarn preview
-```
-
----
-
-## Notas sobre el servidor
-
-El backend puede entrar en reposo cuando no se usa (planes gratuitos). En ese caso, la primera peticion puede demorar mientras el servidor se reactiva. La UI muestra un loader con un mensaje de espera para que el usuario entienda la demora.
-
----
-
-## Scripts disponibles
-
-```
+```bash
 yarn dev       # entorno local
 yarn build     # build de produccion
 yarn preview   # preview del build
@@ -130,82 +223,90 @@ yarn lint      # lint del codigo
 
 ---
 
-## Despliegue (GitHub Pages)
+## Variables de Entorno
 
-El proyecto incluye scripts para deploy en GitHub Pages.
+| Variable | Descripcion | Ejemplo |
+| --- | --- | --- |
+| VITE_API_BASE_URL | URL base de la API | https://api.example.com |
 
-```
-yarn predeploy
-yarn deploy
-```
+Ejemplo `.env.local`:
 
-Si se publica en GitHub Pages, configurar `base` en `vite.config.js` con el nombre del repositorio:
-
-```
-base: "/nombre-del-repo/"
+```env
+VITE_API_BASE_URL=https://api.example.com
 ```
 
 ---
 
-## Estilo visual
+## Deployment
 
-La interfaz usa la paleta del proyecto:
+Servicio recomendado: Netlify.
 
-- Verde principal: `#27AE60`
-- Azul oscuro: `#172554`
-- Violeta acento: `#9932CC`
-- Gris de texto: `#828282`
-- Fondo: `#171717`
+Pasos sugeridos:
 
----
+```bash
+# build de produccion
+yarn build
+```
 
-## UI Kit
+- Publicar la carpeta `dist/`.
+- Configurar variables de entorno en el dashboard.
+- URL de despliegue del frontend: https://democratik.netlify.app/.
 
-Componentes reutilizables destacados:
+Si se usa GitHub Pages, definir `base` en `vite.config.js`:
 
-- Cards de metricas con iconos y crecimiento.
-- Loader con spinner para respuestas lentas de API.
-- Formularios con validacion en tiempo real.
-- Modal de firma digital.
-- Sidebar y menu superior con acciones de usuario.
-- Dropdowns y menus contextuales en panel admin.
-
----
-
-## Roadmap
-
-- Integrar autenticacion real con tokens y refresh.
-- Agregar filtros avanzados en panel de afiliados y mensajes.
-- Mejorar accesibilidad (labels, focus y contrastes).
-- Reportes y exportaciones adicionales.
-- Suite de tests (unitarios y E2E).
+```js
+export default {
+  base: "/nombre-del-repo/",
+};
+```
 
 ---
 
-## Preguntas frecuentes
+## Guias de Uso
 
-**Por que a veces tarda la primera carga?**  
-El backend puede estar en reposo. La primera solicitud despierta el servidor y toma algunos segundos.
+Flujos comunes:
 
-**Donde configuro la URL de la API?**  
-En `.env.local` con `VITE_API_BASE_URL`. Usa un valor generico como ejemplo en documentos.
+1. Completar formulario de afiliacion y adjuntar DNI.
+2. Enviar consulta desde el formulario de contacto.
+3. Revisar metricas y mensajes desde el panel admin.
+4. Exportar listados en Excel desde la seccion correspondiente.
 
-**Necesito instalar algo extra para correrlo?**  
-Solo Node.js LTS y Yarn. El resto se instala con `yarn install`.
+<details>
+  <summary>Guia opcional para administradores</summary>
 
-**Como hago el build para produccion?**  
-Ejecuta `yarn build` y luego `yarn preview` para validarlo localmente.
+  - Validar datos antes de exportar.
+  - Revisar mensajes pendientes y aplicar filtros.
+  - Actualizar estados desde el panel de control.
+</details>
 
 ---
 
-## Contribucion
+## Personalizacion / Extension
 
-1. Crear una rama nueva.
-2. Hacer cambios con mensajes claros.
-3. Probar localmente antes de abrir PR.
+- Ajustar paleta y estilos en los componentes base.
+- Extender rutas agregando nuevos modulos en `routers/`.
+- Reemplazar el cliente HTTP en `config/` si se cambia el backend.
+
+---
+
+## Contribuciones
+
+1. Crear una rama nueva desde `main`.
+2. Realizar cambios con mensajes claros.
+3. Ejecutar `yarn lint` antes de abrir un PR.
 
 ---
 
 ## Licencia
 
 Uso interno del proyecto. Consultar al propietario para distribucion o reutilizacion.
+
+---
+
+<div align="center">
+  <p>Hecho con foco en experiencia y operatividad.</p>
+  <p>
+    <a href="#democratik---herramienta-de-gestion-politica">Volver arriba</a> ·
+    <a href="https://www.linkedin.com/in/augustovillegas/">LinkedIn</a>
+  </p>
+</div>
