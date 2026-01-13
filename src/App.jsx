@@ -72,7 +72,7 @@ export const App = () => {
   // Función que maneja el envío del formulario
   const onSubmit = async (data) => {
     setIsSubmitting(true);
-    console.log("Datos del formulario:", data);
+    console.log("[Contacto] Datos del formulario:", data);
     const formData = new FormData();
 
     // Añadimos los campos del formulario de contacto
@@ -80,29 +80,100 @@ export const App = () => {
     formData.append("correo", data.correo); // Usamos "correo" en vez de "email"
     formData.append("mensaje", data.mensaje);
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+
     try {
+      const endpoint = buildApiUrl("/api/consultas");
+      console.log("[Contacto] Endpoint:", endpoint);
+      console.log("[Contacto] Payload keys:", Array.from(formData.keys()));
       // Envío de datos al servidor
       const response = await axios.post(
-        buildApiUrl("/api/consultas"),
+        endpoint,
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
           },
+          signal: controller.signal,
         }
       );
 
-      console.log("Consulta enviada con éxito:", response.data);
+      console.log("[Contacto] Respuesta:", {
+        status: response.status,
+        data: response.data,
+      });
       setIsSubmitted(true); // Actualiza el estado de envío
       toast.success("Mensaje enviado con éxito"); // Notificacion de envio exitoso
       reset(); // Limpia el formulario después de enviar
     } catch (error) {
-      console.error(
-        "Error al enviar la consulta:",
-        error.response ? error.response.data : error.message
-      );
+      if (error.code === "ERR_CANCELED") {
+        try {
+          const verifyResponse = await axios.get(
+            buildApiUrl("/api/consultas?limite=1&desde=0")
+          );
+          const latest = verifyResponse.data?.mensajes?.[0];
+          const isSaved =
+            latest &&
+            latest.nombre === data.nombre &&
+            latest.correo === data.correo &&
+            latest.mensaje === data.mensaje;
+
+          if (isSaved) {
+            console.warn(
+              "[Contacto] Guardado en BD, pero el envio de email esta demorado."
+            );
+            setIsSubmitted(true);
+            toast.success("Mensaje enviado con exito");
+            reset();
+            return;
+          }
+        } catch (verifyError) {
+          console.error("[Contacto] Verificacion fallida:", {
+            message: verifyError.message,
+            status: verifyError.response?.status,
+            data: verifyError.response?.data,
+          });
+        }
+      }
+      if (error.response?.status === 500) {
+        try {
+          const verifyResponse = await axios.get(
+            buildApiUrl("/api/consultas?limite=1&desde=0")
+          );
+          const latest = verifyResponse.data?.mensajes?.[0];
+          const isSaved =
+            latest &&
+            latest.nombre === data.nombre &&
+            latest.correo === data.correo &&
+            latest.mensaje === data.mensaje;
+
+          if (isSaved) {
+            console.warn(
+              "[Contacto] Guardado en BD, pero fallo notificacion email."
+            );
+            setIsSubmitted(true);
+            toast.success("Mensaje enviado con exito");
+            reset();
+            return;
+          }
+        } catch (verifyError) {
+          console.error("[Contacto] Verificacion fallida:", {
+            message: verifyError.message,
+            status: verifyError.response?.status,
+            data: verifyError.response?.data,
+          });
+        }
+      }
+      console.error("[Contacto] Error al enviar la consulta:", {
+        message: error.message,
+        status: error.response?.status,
+        data: error.response?.data,
+        headers: error.response?.headers,
+      });
       toast.error("Error al enviar el mensaje");
     } finally {
+      clearTimeout(timeoutId);
       setIsSubmitting(false);
     }
   };
@@ -292,73 +363,86 @@ export const App = () => {
             onSubmit={handleSubmit(onSubmit)} // Cambia el handleSubmit para usar react-hook-form
             className="flex flex-wrap justify-between gap-8 px-1 max-w-screen-lg mx-auto"
           >
-            <input
-              className="border-b px-2 py-4 flex-grow basis-60 focus-input"
-              placeholder="Nombre"
-              type="text"
-              id="nombre"
-              name="nombre"
-              {...registerWithFocus("nombre", {
-                required: "El nombre es obligatorio",
-                validate: (value) =>
-                  !hasEmoji(value) || "No se permiten emoticones",
-              })} // Registra el campo con useForm
-            />
-            {errors.nombre && (
-              <p className="text-red-500">{errors.nombre.message}</p>
-            )}
-            <input
-              className="border-b px-2 py-4 flex-grow basis-60 focus-input"
-              placeholder="Correo"
-              type="email"
-              id="correo"
-              {...registerWithFocus("correo", {
-                required: "El correo es obligatorio",
-                pattern: {
-                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: "El correo no es válido",
-                },
-                validate: (value) =>
-                  !hasEmoji(value) || "No se permiten emoticones",
-              })} // Registra el campo con validaciones
-            />
-            {errors.correo && (
-              <p className="text-red-500">{errors.correo.message}</p>
-            )}
-            <textarea
-              className="border px-4 py-6 min-w-full max-w-full w-full min-h-[100px] max-h-60 focus-input"
-              placeholder="Mensaje"
-              id="mensaje"
-              {...registerWithFocus("mensaje", {
-                required: "El mensaje es obligatorio",
-                validate: (value) =>
-                  !hasEmoji(value) || "No se permiten emoticones",
-              })} // Registra el campo textarea
-              rows="4"
-            ></textarea>
-            {errors.mensaje && (
-              <p className="text-red-500">{errors.mensaje.message}</p>
-            )}
+            <div className="relative flex-grow basis-60 pb-6">
+              <input
+                className="border-b px-2 py-4 w-full focus-input"
+                placeholder="Nombre"
+                type="text"
+                id="nombre"
+                name="nombre"
+                {...registerWithFocus("nombre", {
+                  required: "El nombre es obligatorio",
+                  validate: (value) =>
+                    !hasEmoji(value) || "No se permiten emoticones",
+                })} // Registra el campo con useForm
+              />
+              {errors.nombre && (
+                <p className="text-red-500 text-sm absolute left-0 bottom-0">
+                  {errors.nombre.message}
+                </p>
+              )}
+            </div>
+            <div className="relative flex-grow basis-60 pb-6">
+              <input
+                className="border-b px-2 py-4 w-full focus-input"
+                placeholder="Correo"
+                type="email"
+                id="correo"
+                {...registerWithFocus("correo", {
+                  required: "El correo es obligatorio",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "El correo no es valido",
+                  },
+                  validate: (value) =>
+                    !hasEmoji(value) || "No se permiten emoticones",
+                })} // Registra el campo con validaciones
+              />
+              {errors.correo && (
+                <p className="text-red-500 text-sm absolute left-0 bottom-0">
+                  {errors.correo.message}
+                </p>
+              )}
+            </div>
+            <div className="relative w-full pb-6">
+              <textarea
+                className="border px-4 py-6 min-w-full max-w-full w-full min-h-[100px] max-h-60 focus-input"
+                placeholder="Mensaje"
+                id="mensaje"
+                {...registerWithFocus("mensaje", {
+                  required: "El mensaje es obligatorio",
+                  validate: (value) =>
+                    !hasEmoji(value) || "No se permiten emoticones",
+                })} // Registra el campo textarea
+                rows="4"
+              ></textarea>
+              {errors.mensaje && (
+                <p className="text-red-500 text-sm absolute left-0 bottom-0">
+                  {errors.mensaje.message}
+                </p>
+              )}
+            </div>
             <div className="w-full flex flex-col items-center">
               <button
                 type="submit"
                 disabled={isSubmitting}
                 className="bg-green-color/80 text-black font-bold py-5 px-14 mx-auto cursor-pointer hover:bg-green-color duration-300"
               >
-                Enviar
+                {isSubmitting ? "Enviando..." : "Enviar"}
               </button>
-              {isSubmitting && (
-                <ApiLoader
-                  className="py-2"
-                  message="Espera mientras se conecta el servidor y se envía tu mensaje..."
-                />
-              )}
             </div>
           </form>
         </section>
 
         {/* Componente de ToastContainer para renderizar las notificaciones */}
         <ToastContainer />
+        {isSubmitting && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+            <div className="bg-secondary-100 rounded-xl p-6 max-w-md w-full">
+              <ApiLoader message="Espera mientras se conecta el servidor y se envía tu mensaje..." />
+            </div>
+          </div>
+        )}
       </main>
 
       <footer className="py-24 text-center">

@@ -1,0 +1,32 @@
+diff --git a/node_modules/@floating-ui/react/utils/floating-ui.react.utils.esm.js b/node_modules/@floating-ui/react/utils/floating-ui.react.utils.esm.js
+index 7fe438f..9bd3eee 100644
+--- a/node_modules/@floating-ui/react/utils/floating-ui.react.utils.esm.js
++++ b/node_modules/@floating-ui/react/utils/floating-ui.react.utils.esm.js
+@@ -186,11 +186,6 @@ function isReactEvent(event) {
+ 
+ // License: https://github.com/adobe/react-spectrum/blob/b35d5c02fe900badccd0cf1a8f23bb593419f238/packages/@react-aria/utils/src/isVirtualEvent.ts
+ function isVirtualClick(event) {
+-  // FIXME: Firefox is now emitting a deprecation warning for `mozInputSource`.
+-  // Try to find a workaround for this. `react-aria` source still has the check.
+-  if (event.mozInputSource === 0 && event.isTrusted) {
+-    return true;
+-  }
+   if (isAndroid() && event.pointerType) {
+     return event.type === 'click' && event.buttons === 1;
+   }
+diff --git a/node_modules/@floating-ui/react/utils/floating-ui.react.utils.umd.js b/node_modules/@floating-ui/react/utils/floating-ui.react.utils.umd.js
+index b03657b..10ceaaf 100644
+--- a/node_modules/@floating-ui/react/utils/floating-ui.react.utils.umd.js
++++ b/node_modules/@floating-ui/react/utils/floating-ui.react.utils.umd.js
+@@ -225,11 +225,6 @@
+ 
+   // License: https://github.com/adobe/react-spectrum/blob/b35d5c02fe900badccd0cf1a8f23bb593419f238/packages/@react-aria/utils/src/isVirtualEvent.ts
+   function isVirtualClick(event) {
+-    // FIXME: Firefox is now emitting a deprecation warning for `mozInputSource`.
+-    // Try to find a workaround for this. `react-aria` source still has the check.
+-    if (event.mozInputSource === 0 && event.isTrusted) {
+-      return true;
+-    }
+     if (isAndroid() && event.pointerType) {
+       return event.type === 'click' && event.buttons === 1;
+     }
