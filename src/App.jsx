@@ -10,6 +10,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { buildApiUrl } from "./config/api";
 import { ApiLoader } from "./components/ApiLoader";
+import { Spinner } from "./components/Spinner";
 
 import "./tailwind.css";
 
@@ -365,7 +366,12 @@ export const App = () => {
                 disabled={isSubmitting}
                 className="bg-green-color/80 text-black font-bold py-5 px-14 mx-auto cursor-pointer hover:bg-green-color duration-300"
               >
-                {isSubmitting ? "Enviando..." : "Enviar"}
+                {isSubmitting ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <Spinner size="sm" />
+                    Enviando...
+                  </span>
+                ) : "Enviar"}
               </button>
             </div>
           </form>

@@ -4,7 +4,6 @@ import DropDownActions from "../utils/DropDownActions";
 import { FaSearch } from "react-icons/fa";
 import { DownloadAffiliates } from "../utils/DownloadAffiliates";
 import { PaginationControls } from "./PaginationControls";
-import { ApiLoader } from "./ApiLoader";
 import { formatDate } from "../utils/formatDate";
 
 export const Affiliates = () => {
@@ -81,7 +80,17 @@ export const Affiliates = () => {
           <h5>Contacto</h5>
         </div>
 
-        {loading && <ApiLoader className="py-6" />}
+        {loading &&
+          Array.from({ length: 5 }).map((_, i) => (
+            <div
+              key={i}
+              className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4 p-2 bg-secondary-900 rounded-md animate-pulse"
+            >
+              {Array.from({ length: 5 }).map((_, j) => (
+                <div key={j} className="h-5 bg-secondary-100 rounded" />
+              ))}
+            </div>
+          ))}
         {error && <p className="text-red-400 py-4">{error}</p>}
 
         {filteredAffiliados.map((afiliado) => (

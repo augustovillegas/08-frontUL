@@ -11,7 +11,6 @@ import { AiFillTikTok } from "react-icons/ai";
 import { FaInstagram } from "react-icons/fa6";
 import { FaFacebook } from "react-icons/fa";
 import { buildApiUrl } from "../config/api";
-import { ApiLoader } from "./ApiLoader";
 
 
 export const Analitycs = () => {
@@ -60,9 +59,13 @@ export const Analitycs = () => {
 
       <div className="grid grid-cols-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-5">
         {loading ? (
-          <div className="col-span-full bg-secondary-100 rounded-xl p-8">
-            <ApiLoader />
-          </div>
+          Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="bg-secondary-100 rounded-xl p-6 animate-pulse">
+              <div className="h-8 w-8 bg-secondary-900 rounded-full mb-4" />
+              <div className="h-7 w-1/2 bg-secondary-900 rounded mb-2" />
+              <div className="h-4 w-3/4 bg-secondary-900 rounded" />
+            </div>
+          ))
         ) : (
           <>
             <div>

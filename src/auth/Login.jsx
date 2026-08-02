@@ -5,6 +5,7 @@ import { RiMailFill, RiLockFill, RiEyeFill, RiEyeOffFill } from "react-icons/ri"
 import { toast } from "react-toastify";
 import apiClient from "../config/api";
 import { useAuth } from "../context/AuthContext";
+import { Spinner } from "../components/Spinner";
 
 export const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -82,7 +83,12 @@ export const Login = () => {
           disabled={isSubmitting}
           className="bg-primary uppercase font-bold text-xs sm:text-sm w-full py-3 px-4 rounded-lg hover:text-black transition-colors disabled:opacity-50"
         >
-          {isSubmitting ? "Ingresando..." : "Ingresar"}
+          {isSubmitting ? (
+            <span className="flex items-center justify-center gap-2">
+              <Spinner size="sm" />
+              Ingresando...
+            </span>
+          ) : "Ingresar"}
         </button>
       </form>
       <div className="flex justify-center text-xs sm:text-sm">

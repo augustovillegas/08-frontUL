@@ -15,6 +15,7 @@ import { IoCloseSharp } from "react-icons/io5";
 import { BiMenuAltRight } from "react-icons/bi";
 import { buildApiUrl } from "../config/api";
 import { ApiLoader } from "./ApiLoader";
+import { Spinner } from "./Spinner";
 
 export const Form = () => {
   const [activeLink, setActiveLink] = useState("");
@@ -743,13 +744,22 @@ export const Form = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="flex justify-center items-center bg-green-color py-5 px-14 mx-auto cursor-pointer hover:bg-green-700 text-white font-bold  rounded focus:outline-none focus:shadow-outline"
+                    className="flex justify-center items-center gap-2 bg-green-color py-5 px-14 mx-auto cursor-pointer hover:bg-green-700 text-white font-bold rounded focus:outline-none focus:shadow-outline disabled:opacity-70"
                   >
-                    Enviar
+                    {isSubmitting ? (
+                      <>
+                        <Spinner size="sm" />
+                        Enviando...
+                      </>
+                    ) : "Enviar"}
                   </button>
                 </div>
                 {isSubmitting && (
-                  <ApiLoader className="py-2" message="Espera mientras se conecta el servidor y se envía tu solicitud..." />
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+                    <div className="bg-secondary-100 rounded-xl p-6 max-w-md w-full">
+                      <ApiLoader message="Subiendo archivos y registrando tu solicitud..." />
+                    </div>
+                  </div>
                 )}
               </div>
             </form>

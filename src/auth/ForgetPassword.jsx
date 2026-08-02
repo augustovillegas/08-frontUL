@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { RiMailFill } from "react-icons/ri";
 import { toast } from "react-toastify";
 import apiClient from "../config/api";
+import { Spinner } from "../components/Spinner";
 
 export const ForgetPassword = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,7 +58,12 @@ export const ForgetPassword = () => {
             disabled={isSubmitting}
             className="bg-primary uppercase font-bold text-xs sm:text-sm w-full py-3 px-4 rounded-lg hover:text-black transition-colors disabled:opacity-50"
           >
-            {isSubmitting ? "Enviando..." : "Enviar instrucciones"}
+            {isSubmitting ? (
+              <span className="flex items-center justify-center gap-2">
+                <Spinner size="sm" />
+                Enviando...
+              </span>
+            ) : "Enviar instrucciones"}
           </button>
         </form>
       )}

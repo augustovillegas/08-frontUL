@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import apiClient from "../config/api";
 import { buildApiUrl } from "../config/api";
 import { TiDownloadOutline } from "react-icons/ti";
-import { ApiLoader } from "../components/ApiLoader";
+import { Spinner } from "../components/Spinner";
 
 export const DownloadAffiliates = () => {
   const [isDownloading, setIsDownloading] = useState(false);
@@ -49,17 +49,20 @@ export const DownloadAffiliates = () => {
       <button
         onClick={handleDownload}
         disabled={isDownloading}
-        className="flex items-center text-white bg-green-color/90 hover:bg-green-color p-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="flex items-center gap-2 text-white bg-green-color/90 hover:bg-green-color p-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
-        <TiDownloadOutline className="text-2xl mr-2" />
-        {isDownloading ? "Generando..." : "Descargar Excel"}
+        {isDownloading ? (
+          <>
+            <Spinner size="sm" />
+            Generando...
+          </>
+        ) : (
+          <>
+            <TiDownloadOutline className="text-2xl" />
+            Descargar Excel
+          </>
+        )}
       </button>
-      {isDownloading && (
-        <ApiLoader
-          className="items-end text-right"
-          message="Generando Excel con todos los afiliados..."
-        />
-      )}
       {error && <p className="text-red-400 text-sm">{error}</p>}
     </div>
   );
