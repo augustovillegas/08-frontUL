@@ -53,7 +53,7 @@ export const DownloadAffiliates = () => {
         {isDownloading
           ? <Spinner size="sm" />
           : <TiDownloadOutline className="text-2xl" />}
-        Descargar Excel
+        {isDownloading ? "Descargando..." : "Descargar Excel"}
       </button>
       {error && <p className="text-red-400 text-sm">{error}</p>}
     </div>
