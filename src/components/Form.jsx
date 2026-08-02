@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import axios from "axios";
+import apiClient from "../config/api";
 import { Link as RouterLink } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
 import { SignatureForm } from "./SignatureForm";
@@ -90,12 +90,10 @@ export const Form = () => {
   // Manejo de dropzone para fotosDni
   const onDropFotosDni = useCallback(
     (acceptedFiles) => {
-      const file = acceptedFiles[0];
-      setFotosDni(acceptedFiles); // Almacenar varios archivos
-      setValue("fotosDni", acceptedFiles); // Actualizar valor del formulario
+      setFotosDni(acceptedFiles);
       setUploadError("");
     },
-    [setValue]
+    []
   );
 
   const {
@@ -114,10 +112,9 @@ export const Form = () => {
   // Función que maneja el envío del formulario
   const onSubmit = async (data) => {
     setIsSubmitting(true);
-    console.log("Datos del formulario:", data);
     const formData = new FormData();
     formData.append("nombre", data.nombre);
-    formData.append("dni", data.dni);
+    formData.append("dni", data.dni.replace(/[\s.\-]/g, ""));
     formData.append("correo", data.correo);
     formData.append("fechaNacimiento", data.fechaNacimiento);
     formData.append("domicilio", data.domicilio);
@@ -136,12 +133,10 @@ export const Form = () => {
     // Verificar si la firma está disponible
     if (data.firma) {
       formData.append("firma", data.firma); // Firma en base64
-    } else {
-      console.log("No se obtuvo la firma desde el formulario.");
     }
 
     try {
-      const response = await axios.post(
+      const response = await apiClient.post(
         buildApiUrl("/api/afiliados"),
         formData,
         {
@@ -151,17 +146,12 @@ export const Form = () => {
         }
       );
 
-      console.log("Afiliado creado:", response.data);
-      toast.success("Formulario enviado con éxito"); // Notificación de envío exitoso
+      toast.success("Formulario enviado con éxito");
       reset(); // Limpia el formulario
       setFotosDni(null); // Limpia el estado de fotoDni
       setFirma(null); // Limpia el estado de firma
       setSignatureResetKey((prev) => prev + 1);
-    } catch (error) {
-      console.error(
-        "Error al crear afiliado:",
-        error.response ? error.response.data : error.message
-      );
+    } catch {
       toast.error("Error al enviar el mensaje");
     } finally {
       setIsSubmitting(false);
@@ -190,7 +180,7 @@ export const Form = () => {
 
             {/* Ícono del menú hamburguesa */}
             <label
-              className={`w-10 h-10 bg-green-color rounded-lg cursor-pointer transition-transform z-50 md:hidden`}
+              className={`w-10 h-10 bg-green-color rounded-lg cursor-pointer transition-transform z-50 lg:hidden`}
               htmlFor="menu"
             >
               {isMenuOpen ? (
@@ -200,7 +190,7 @@ export const Form = () => {
               )}
             </label>
 
-            <ul className="fixed inset-0 bg-primary px-[5%] grid gap-6 auto-rows-max content-center justify-items-center clip-circle-0 peer-checked/menu:clip-circle-full transition-[clip-path] duration-500 md:clip-circle-full md:relative md:grid-flow-col md:p-0 md:bg-transparent z-40">
+            <ul className="fixed inset-0 bg-primary px-[5%] grid gap-6 auto-rows-max content-center justify-items-center clip-circle-0 peer-checked/menu:clip-circle-full transition-[clip-path] duration-500 lg:clip-circle-full lg:relative lg:grid-flow-col lg:p-0 lg:bg-transparent z-40">
               <li>
                 <RouterLink
                   to="/"
@@ -240,13 +230,13 @@ export const Form = () => {
           <div className="w-full mx-auto p-1 rounded-xl">
             <form
               onSubmit={handleSubmit(onSubmit)}
-              className="grid grid-cols-1 md:grid-cols-2 gap-6 px-3 py-3 rounded-lg"
+              className="grid grid-cols-1 lg:grid-cols-2 gap-6 px-3 py-3 rounded-lg"
             >
               <h2 className="bg-primary uppercase px-2 py-4 text-3xl text-center text-white mb-3 rounded-md col-span-2 ">
                 Inscripción de afiliados
               </h2>
 
-              <div className="col-span-2 md:col-span-1 mb-4 relative">
+              <div className="col-span-2 lg:col-span-1 mb-4 relative">
                 <div className="relative">
                   <RiUser2Fill className="absolute top-1/2 left-2 transform -translate-y-1/2 mt-2" />
 
@@ -283,7 +273,7 @@ export const Form = () => {
                 )}
               </div>
 
-              <div className="col-span-2 md:col-span-1 mb-4 relative">
+              <div className="col-span-2 lg:col-span-1 mb-4 relative">
                 <div className="relative">
                   <HiMiniIdentification className="absolute top-1/2 left-2 transform -translate-y-1/2 mt-2" />
                   <label
@@ -323,7 +313,7 @@ export const Form = () => {
                 )}
               </div>
 
-              <div className="col-span-2 md:col-span-1 mb-4 relative">
+              <div className="col-span-2 lg:col-span-1 mb-4 relative">
                 <div className="relative">
                   <RiMailFill className="absolute top-1/2 left-2 transform -translate-y-1/2 mt-2" />
                   <label
@@ -356,7 +346,7 @@ export const Form = () => {
                 )}
               </div>
 
-              <div className="col-span-2 md:col-span-1 mb-4">
+              <div className="col-span-2 lg:col-span-1 mb-4">
                 <label
                   htmlFor="fechaNacimiento"
                   className="block text-sm font-bold text-white"
@@ -364,7 +354,7 @@ export const Form = () => {
                   Fecha de nacimiento
                 </label>
                 <input
-                  className="px-2 py-3 border-b border-primary bg-secondary-100 focus-input-2"
+                  className="w-full px-2 py-3 border-b border-primary bg-secondary-100 focus-input-2"
                   id="fechaNacimiento"
                   type="date"
                   {...registerWithFocus("fechaNacimiento", {
@@ -386,7 +376,7 @@ export const Form = () => {
                 )}
               </div>
 
-              <div className="col-span-2 md:col-span-1 mb-4 relative">
+              <div className="col-span-2 lg:col-span-1 mb-4 relative">
                 <label
                   htmlFor="domicilio"
                   className="block text-sm font-bold text-white"
@@ -416,14 +406,14 @@ export const Form = () => {
                     })}
                   />
                 </div>
-                {errors.fechaNacimiento && (
+                {errors.domicilio && (
                   <span className="text-red-500 block mt-1">
-                    {errors.fechaNacimiento.message}
+                    {errors.domicilio.message}
                   </span>
                 )}
               </div>
 
-              <div className="col-span-2 md:col-span-1 mb-4 relative">
+              <div className="col-span-2 lg:col-span-1 mb-4 relative">
                 <div className="relative">
                   <FaPhoneSquareAlt className="absolute top-1/2 left-2 transform -translate-y-1/2 mt-2" />
 
@@ -564,7 +554,7 @@ export const Form = () => {
                 )}
               </div>
 
-              <div className="col-span-2 mb-4">
+              <div className="col-span-2 lg:col-span-1 mb-4">
                 <label
                   htmlFor="estadoCivil"
                   className="block text-sm font-bold text-white"
@@ -593,7 +583,7 @@ export const Form = () => {
                 )}
               </div>
 
-              <div className="col-span-2 mb-4">
+              <div className="col-span-2 lg:col-span-1 mb-4">
                 <label
                   htmlFor="ocupacion"
                   className="block text-sm font-bold text-white"
@@ -625,32 +615,73 @@ export const Form = () => {
                 )}
               </div>
 
-              <div
-                className="col-span-2 mb-2"
-                {...getRootPropsFotosDni()}
-                style={{
-                  border: "2px dashed #ccc",
-                  padding: "20px",
-                  borderRadius: "4px",
-                  textAlign: "center",
-                  cursor: "pointer", // Para indicar que es interactivo
-                }}
-              >
-                <input {...getInputPropsFotosDni()} />
-                {fotosDni && fotosDni.length > 0 ? (
-                  <div>
-                    {fotosDni.map((file, index) => (
-                      <p key={index}>{file.name}</p>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center gap-2 text-gray-500 text-sm">
-                    <MdOutlinePhotoLibrary className="text-3xl text-gray-400" />
-                    <p>
-                      Arrastra la foto del DNI aqui o haz clic para seleccionar
-                    </p>
-                  </div>
-                )}
+              <div className="col-span-2 mb-2">
+                <label className="block text-sm font-bold text-white mb-1">
+                  Foto del DNI
+                </label>
+                <div
+                  {...getRootPropsFotosDni()}
+                  className={`rounded-lg border-2 border-dashed p-5 text-center cursor-pointer transition-colors ${
+                    isDragActiveFotosDni
+                      ? "border-primary bg-primary/10"
+                      : "border-gray-500 hover:border-primary/60"
+                  }`}
+                >
+                  <input {...getInputPropsFotosDni()} />
+                  {fotosDni && fotosDni.length > 0 ? (
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="flex flex-wrap gap-3 justify-center">
+                        {fotosDni.map((file, index) => (
+                          <div key={index} className="relative group">
+                            <img
+                              src={URL.createObjectURL(file)}
+                              alt={file.name}
+                              className="w-24 h-24 object-cover rounded-lg border border-gray-500"
+                            />
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setFotosDni((prev) =>
+                                  prev.filter((_, i) => i !== index)
+                                );
+                              }}
+                              className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <IoCloseSharp className="text-xs" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-gray-400 text-xs">
+                        {fotosDni.length} archivo
+                        {fotosDni.length > 1 ? "s" : ""} seleccionado
+                        {fotosDni.length > 1 ? "s" : ""} ·{" "}
+                        <span className="text-primary/80 underline">
+                          Haz clic para cambiar
+                        </span>
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center gap-2 py-3">
+                      <MdOutlinePhotoLibrary
+                        className={`text-4xl transition-colors ${
+                          isDragActiveFotosDni
+                            ? "text-primary"
+                            : "text-gray-400"
+                        }`}
+                      />
+                      <p className="text-gray-300 text-sm font-medium">
+                        {isDragActiveFotosDni
+                          ? "Suelta las fotos aquí"
+                          : "Arrastrá las fotos del DNI aquí"}
+                      </p>
+                      <p className="text-gray-500 text-xs">
+                        o hacé clic para seleccionar · JPG, PNG
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Mostrar el error si existe */}
@@ -681,7 +712,7 @@ export const Form = () => {
                   Acepto los términos y condiciones.
                 </label>
                 {errors.aceptaTerminos && (
-                  <span className="text-red-500 text-sm mt-1 md:mt-0 md:ml-2 block">
+                  <span className="text-red-500 text-sm mt-1 lg:mt-0 lg:ml-2 block">
                     {errors.aceptaTerminos.message}
                   </span>
                 )}

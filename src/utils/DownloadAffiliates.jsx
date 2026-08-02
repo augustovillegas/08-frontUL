@@ -1,30 +1,44 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { TiDownloadOutline } from "react-icons/ti";
+import PropTypes from "prop-types";
+import apiClient from "../config/api";
 import { buildApiUrl } from "../config/api";
+import { TiDownloadOutline } from "react-icons/ti";
 import { ApiLoader } from "../components/ApiLoader";
 
 export const DownloadAffiliates = () => {
   const [isDownloading, setIsDownloading] = useState(false);
+  const [error, setError] = useState(null);
 
   const handleDownload = async () => {
+    setIsDownloading(true);
+    setError(null);
     try {
-      setIsDownloading(true);
-      // Petición al backend para descargar el archivo Excel
-      const response = await axios.get(buildApiUrl("/api/export"), {
-        responseType: "blob", // Asegurarse de recibir el archivo como Blob
-      });
+      // Obtiene todos los afiliados (sin paginación)
+      const response = await apiClient.get(
+        buildApiUrl("/api/afiliados?limite=10000&desde=0")
+      );
+      const afiliados = response.data?.afiliados ?? [];
 
-      // Crear un enlace temporal para descargar el archivo
-      const url = window.URL.createObjectURL(new Blob([response.data]));
+      // Carga ExcelJS solo cuando se necesita (code splitting)
+      const { generateAffiliatesExcel } = await import("./generateExcel");
+      const buffer = await generateAffiliatesExcel(afiliados);
+
+      const blob = new Blob([buffer], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
+      const fecha = new Date().toLocaleDateString("es-ES", {
+        day: "2-digit", month: "2-digit", year: "numeric",
+      }).replace(/\//g, "-");
       link.href = url;
-      link.setAttribute("download", "ListadoDeAfiliados.xlsx"); // Nombre del archivo
+      link.download = `Democratik_Afiliados_${fecha}.xlsx`;
       document.body.appendChild(link);
       link.click();
       link.remove();
-    } catch (error) {
-      console.error("Error al descargar los afiliados:", error);
+      URL.revokeObjectURL(url);
+    } catch {
+      setError("No se pudo generar el archivo. Intentá de nuevo.");
     } finally {
       setIsDownloading(false);
     }
@@ -35,17 +49,20 @@ export const DownloadAffiliates = () => {
       <button
         onClick={handleDownload}
         disabled={isDownloading}
-        className="flex items-center text-white bg-green-color/90 hover:bg-green-color p-2 rounded-md"
+        className="flex items-center text-white bg-green-color/90 hover:bg-green-color p-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         <TiDownloadOutline className="text-2xl mr-2" />
-        Descargar
+        {isDownloading ? "Generando..." : "Descargar Excel"}
       </button>
       {isDownloading && (
         <ApiLoader
           className="items-end text-right"
-          message="Espera mientras se conecta el servidor y se prepara la descarga..."
+          message="Generando Excel con todos los afiliados..."
         />
       )}
+      {error && <p className="text-red-400 text-sm">{error}</p>}
     </div>
   );
 };
+
+DownloadAffiliates.propTypes = {};

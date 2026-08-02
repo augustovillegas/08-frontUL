@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link as RouterLink } from "react-router-dom";
 import { Link as ScrollLink } from "react-scroll";
-import axios from "axios";
+import apiClient from "./config/api";
 
 import { IoCloseSharp } from "react-icons/io5";
 import { BiMenuAltRight } from "react-icons/bi";
@@ -16,7 +16,6 @@ import "./tailwind.css";
 export const App = () => {
   const [activeLink, setActiveLink] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSetActive = (to) => {
@@ -72,40 +71,22 @@ export const App = () => {
   // Función que maneja el envío del formulario
   const onSubmit = async (data) => {
     setIsSubmitting(true);
-    console.log("[Contacto] Datos del formulario:", data);
     const formData = new FormData();
-
-    // Añadimos los campos del formulario de contacto
     formData.append("nombre", data.nombre);
-    formData.append("correo", data.correo); // Usamos "correo" en vez de "email"
+    formData.append("correo", data.correo);
     formData.append("mensaje", data.mensaje);
 
     try {
       const endpoint = buildApiUrl("/api/consultas");
-      console.log("[Contacto] Endpoint:", endpoint);
-      console.log("[Contacto] Payload keys:", Array.from(formData.keys()));
-      // Envío de datos al servidor
-      const response = await axios.post(
-        endpoint,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      console.log("[Contacto] Respuesta:", {
-        status: response.status,
-        data: response.data,
+      await apiClient.post(endpoint, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      setIsSubmitted(true); // Actualiza el estado de envío
-      toast.success("Mensaje enviado con éxito"); // Notificacion de envio exitoso
-      reset(); // Limpia el formulario después de enviar
+      toast.success("Mensaje enviado con éxito");
+      reset();
     } catch (error) {
-      if (error.code === "ERR_CANCELED") {
+      if (error.code === "ERR_CANCELED" || error.response?.status === 500) {
         try {
-          const verifyResponse = await axios.get(
+          const verifyResponse = await apiClient.get(
             buildApiUrl("/api/consultas?limite=1&desde=0")
           );
           const latest = verifyResponse.data?.mensajes?.[0];
@@ -116,57 +97,15 @@ export const App = () => {
             latest.mensaje === data.mensaje;
 
           if (isSaved) {
-            console.warn(
-              "[Contacto] Guardado en BD, pero el envio de email esta demorado."
-            );
-            setIsSubmitted(true);
-            toast.success("Mensaje enviado con exito");
+            // mensaje enviado
+            toast.success("Mensaje enviado con éxito");
             reset();
             return;
           }
-        } catch (verifyError) {
-          console.error("[Contacto] Verificacion fallida:", {
-            message: verifyError.message,
-            status: verifyError.response?.status,
-            data: verifyError.response?.data,
-          });
+        } catch {
+          // verificación fallida, continúa al toast de error
         }
       }
-      if (error.response?.status === 500) {
-        try {
-          const verifyResponse = await axios.get(
-            buildApiUrl("/api/consultas?limite=1&desde=0")
-          );
-          const latest = verifyResponse.data?.mensajes?.[0];
-          const isSaved =
-            latest &&
-            latest.nombre === data.nombre &&
-            latest.correo === data.correo &&
-            latest.mensaje === data.mensaje;
-
-          if (isSaved) {
-            console.warn(
-              "[Contacto] Guardado en BD, pero fallo notificacion email."
-            );
-            setIsSubmitted(true);
-            toast.success("Mensaje enviado con exito");
-            reset();
-            return;
-          }
-        } catch (verifyError) {
-          console.error("[Contacto] Verificacion fallida:", {
-            message: verifyError.message,
-            status: verifyError.response?.status,
-            data: verifyError.response?.data,
-          });
-        }
-      }
-      console.error("[Contacto] Error al enviar la consulta:", {
-        message: error.message,
-        status: error.response?.status,
-        data: error.response?.data,
-        headers: error.response?.headers,
-      });
       toast.error("Error al enviar el mensaje");
     } finally {
       setIsSubmitting(false);

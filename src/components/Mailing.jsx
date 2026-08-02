@@ -136,8 +136,6 @@ export const Mailing = () => {
           <input
             type="text"
             placeholder="Destinatario"
-            //value={correo}
-            //onChange={(e) => setCorreo(e.target.value)}
             className="mb-4 p-2 w-full rounded"
           />
         </div>
@@ -145,8 +143,6 @@ export const Mailing = () => {
           <input
             type="text"
             placeholder="Asunto"
-            // value={subject}
-            //onChange={(e) => setSubject(e.target.value)}
             className="mb-4 p-2 w-full rounded"
           />
         </div>
@@ -160,8 +156,6 @@ export const Mailing = () => {
         <div className="mb-3">
           <textarea
             placeholder="Mensaje"
-            // value={message}
-            // onChange={(e) => setMessage(e.target.value)}
             className="mb-4 p-2 w-full rounded"
           />
         </div>
@@ -211,13 +205,11 @@ export const Mailing = () => {
         </div>
         <div>
           <button
-            //onClick={handleSendEmail}
             className="bg-green-color text-black font-bold py-3 px-2 rounded-md"
           >
             Send Emails
           </button>
           <button
-            //onClick={handleSaveDraft}
             className="ml-3 bg-secondary-900 text-gray-200 font-bold py-3 px-3 rounded-md"
           >
             Guardar borrador

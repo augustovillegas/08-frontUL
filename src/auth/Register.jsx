@@ -1,39 +1,65 @@
 import React, { useState } from "react";
-import {
-  RiMailFill,
-  RiLockFill,
-  RiEyeFill,
-  RiEyeOffFill,
-  RiUserLine,
-} from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { RiMailFill, RiLockFill, RiEyeFill, RiEyeOffFill, RiUserLine } from "react-icons/ri";
+import { toast } from "react-toastify";
+import apiClient from "../config/api";
+import { useAuth } from "../context/AuthContext";
 
 export const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
+  const { register, handleSubmit, watch, formState: { errors } } = useForm({
+    defaultValues: { nombre: "", apellido: "", correo: "", password: "", confirmarPassword: "" },
+  });
+
+  const password = watch("password");
+
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
+    try {
+      // El backend une nombre + apellido en un solo campo "nombre"
+      await apiClient.post("/api/users/", {
+        nombre: `${data.nombre} ${data.apellido}`.trim(),
+        correo: data.correo,
+        password: data.password,
+        rol: "USER_ROLE",
+      });
+      // POST /api/users/ no devuelve token — hacemos login automático
+      const loginRes = await apiClient.post("/api/auth/login", {
+        correo: data.correo,
+        password: data.password,
+      });
+      const { token, usuario } = loginRes.data;
+      login(token, usuario);
+      toast.success("Cuenta creada con éxito");
+      navigate("/admin", { replace: true });
+    } catch (error) {
+      const msg = error.response?.data?.msg || "Error al crear la cuenta";
+      toast.error(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="bg-secondary-100 w-full max-w-[440px] p-6 sm:p-8 md:p-10 rounded-xl">
       <h1 className="text-2xl sm:text-3xl text-center uppercase text-white font-bold tracking-[3px] mb-6 sm:mb-8">
         Crear cuenta
       </h1>
-      <form className="mb-6 sm:mb-8">
-        <button className="flex items-center justify-center py-3 px-4 gap-2 bg-secondary-900 w-full rounded-full mb-6 sm:mb-8 text-gray-100 text-xs sm:text-sm">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            className="icons w-4 h-4"
-          >
-            <path d="M20.283 10.356h-8.327v3.451h4.792c-.446 2.193-2.313 3.453-4.792 3.453a5.27 5.27 0 0 1-5.279-5.28 5.27 5.27 0 0 1 5.279-5.279c1.259 0 2.397.447 3.29 1.178l2.6-2.599c-1.584-1.381-3.615-2.233-5.89-2.233a8.908 8.908 0 0 0-8.934 8.934 8.907 8.907 0 0 0 8.934 8.934c4.467 0 8.529-3.249 8.529-8.934 0-.528-.081-1.097-.202-1.625z"></path>
-          </svg>
-          Registrate con google
-        </button>
+      <form onSubmit={handleSubmit(onSubmit)} className="mb-6 sm:mb-8">
         <div className="relative mb-4">
           <RiUserLine className="absolute top-1/2 -translate-y-1/2 left-2" />
           <input
             type="text"
             className="py-3 pl-8 pr-4 bg-secondary-900 w-full outline-none rounded-lg focus-input text-sm sm:text-base"
             placeholder="Nombre(s)"
+            {...register("nombre", { required: "El nombre es obligatorio" })}
           />
+          {errors.nombre && <p className="text-red-500 text-xs mt-1">{errors.nombre.message}</p>}
         </div>
         <div className="relative mb-4">
           <RiUserLine className="absolute top-1/2 -translate-y-1/2 left-2" />
@@ -41,69 +67,63 @@ export const Register = () => {
             type="text"
             className="py-3 pl-8 pr-4 bg-secondary-900 w-full outline-none rounded-lg focus-input text-sm sm:text-base"
             placeholder="Apellido(s)"
+            {...register("apellido", { required: "El apellido es obligatorio" })}
           />
+          {errors.apellido && <p className="text-red-500 text-xs mt-1">{errors.apellido.message}</p>}
         </div>
         <div className="relative mb-4">
           <RiMailFill className="absolute top-1/2 -translate-y-1/2 left-2" />
           <input
             type="email"
             className="py-3 pl-8 pr-4 bg-secondary-900 w-full outline-none rounded-lg focus-input text-sm sm:text-base"
-            placeholder="Correo electronico"
+            placeholder="Correo electrónico"
+            {...register("correo", {
+              required: "El correo es obligatorio",
+              pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Correo inválido" },
+            })}
           />
+          {errors.correo && <p className="text-red-500 text-xs mt-1">{errors.correo.message}</p>}
         </div>
         <div className="relative mb-4">
           <RiLockFill className="absolute top-1/2 -translate-y-1/2 left-2" />
           <input
             type={showPassword ? "text" : "password"}
-            className="py-3 pl-8 pr-4 bg-secondary-900 w-full outline-none rounded-lg focus-input text-sm sm:text-base"
-            placeholder="Contrasena"
+            className="py-3 pl-8 pr-10 bg-secondary-900 w-full outline-none rounded-lg focus-input text-sm sm:text-base"
+            placeholder="Contraseña"
+            {...register("password", {
+              required: "La contraseña es obligatoria",
+              minLength: { value: 6, message: "Mínimo 6 caracteres" },
+            })}
           />
-          {showPassword ? (
-            <RiEyeOffFill
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute top-1/2 -translate-y-1/2 right-2 hover:cursor-pointer"
-            />
-          ) : (
-            <RiEyeFill
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute top-1/2 -translate-y-1/2 right-2 hover:cursor-pointer"
-            />
-          )}
-        </div>
-        <div className="relative mb-4">
-          <RiLockFill className="absolute top-1/2 -translate-y-1/2 left-2" />
-          <input
-            type={showPassword ? "text" : "password"}
-            className="py-3 pl-8 pr-4 bg-secondary-900 w-full outline-none rounded-lg focus-input text-sm sm:text-base"
-            placeholder="Confirmar contrasena"
-          />
-          {showPassword ? (
-            <RiEyeOffFill
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute top-1/2 -translate-y-1/2 right-2 hover:cursor-pointer"
-            />
-          ) : (
-            <RiEyeFill
-              onClick={() => setShowPassword(!showPassword)}
-              className="absolute top-1/2 -translate-y-1/2 right-2 hover:cursor-pointer"
-            />
-          )}
-        </div>
-        <div>
-          <button
-            type="submit"
-            className="bg-primary uppercase font-bold text-xs sm:text-sm w-full py-3 px-4 rounded-lg hover:text-black transition-colors"
-          >
-            Registrarme
+          <button type="button" onClick={() => setShowPassword((v) => !v)} className="absolute top-1/2 -translate-y-1/2 right-2">
+            {showPassword ? <RiEyeOffFill /> : <RiEyeFill />}
           </button>
+          {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
         </div>
+        <div className="relative mb-4">
+          <RiLockFill className="absolute top-1/2 -translate-y-1/2 left-2" />
+          <input
+            type={showPassword ? "text" : "password"}
+            className="py-3 pl-8 pr-10 bg-secondary-900 w-full outline-none rounded-lg focus-input text-sm sm:text-base"
+            placeholder="Confirmar contraseña"
+            {...register("confirmarPassword", {
+              required: "Confirmá tu contraseña",
+              validate: (v) => v === password || "Las contraseñas no coinciden",
+            })}
+          />
+          {errors.confirmarPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmarPassword.message}</p>}
+        </div>
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="bg-primary uppercase font-bold text-xs sm:text-sm w-full py-3 px-4 rounded-lg hover:text-black transition-colors disabled:opacity-50"
+        >
+          {isSubmitting ? "Creando cuenta..." : "Registrarme"}
+        </button>
       </form>
       <span className="flex items-center justify-center gap-2 text-xs sm:text-sm">
-        Ya tienes cuenta?{" "}
-        <Link
-          to="/login"
-          className="text-primary hover:text-primary/80 transition-colors"
-        >
+        ¿Ya tienes cuenta?{" "}
+        <Link to="/login" className="text-primary hover:text-primary/80 transition-colors">
           Ingresa
         </Link>
       </span>

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export const ApiLoader = ({
   message = "Espera mientras se conecta el servidor...",
@@ -10,4 +11,9 @@ export const ApiLoader = ({
       <p className="text-gray-300 text-center max-w-md">{message}</p>
     </div>
   );
+};
+
+ApiLoader.propTypes = {
+  message: PropTypes.string,
+  className: PropTypes.string,
 };

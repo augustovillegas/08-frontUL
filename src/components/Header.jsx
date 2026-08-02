@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   RiNotification3Line,
   RiArrowDownSLine,
@@ -12,14 +12,16 @@ import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/theme-dark.css";
 import "@szhsin/react-menu/dist/transitions/zoom.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export const Header = () => {
-  const [display, setDisplay] = useState("arrow");
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
-  const [showSubMenu, setShowSubMenu] = useState(false);
-  const handleMenuToggle = () => {
-    setShowSubMenu((prev) => !prev);
+  const handleLogout = () => {
+    logout();
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -37,7 +39,7 @@ export const Header = () => {
           }
           transition
           theming="dark"
-          arrow={display === "arrow"}
+          arrow
         >
           <h1 className="text-gray-300 text-center font-medium">
             Notificaciones (2)
@@ -111,25 +113,18 @@ export const Header = () => {
         {/* MENU USUARIO */}
         <Menu
           menuButton={
-            <MenuButton
-              onClick={handleMenuToggle}
-              className="flex items-center gap-x-2 p-2 hover:bg-secondary-100 rounded-lg transition-colors duration-500"
-            >
+            <MenuButton className="flex items-center gap-x-2 p-2 hover:bg-secondary-100 rounded-lg transition-colors duration-500">
                <img
                 src="/Democratik-Icon2.png"
                 className="w-6 h-6 p-1 bg-white  rounded-full"
               />
-              <span>Usuario</span>
-              <RiArrowDownSLine
-                className={`transition-transform duration-300 ${
-                  showSubMenu ? "rotate-120" : "-rotate-90"
-                } `}
-              />
+              <span>{user?.nombre || "Usuario"}</span>
+              <RiArrowDownSLine className="transition-transform duration-300" />
             </MenuButton>
           }
           transition
           theming="dark"
-          arrow={display === "arrow"}
+          arrow
         >
           <MenuItem className="p-0 hover:bg-transparent">
             <Link
@@ -141,8 +136,8 @@ export const Header = () => {
                 className="w-8 h-8 p-1 bg-white  rounded-full"
               />
               <div className="flex flex-col text-sm">
-                <span className="text-sm">Usuario</span>
-                <span className="text-xs text-gray-500">DK@gmail.com</span>
+                <span className="text-sm">{user?.nombre || "Usuario"}</span>
+                <span className="text-xs text-gray-500">{user?.correo || ""}</span>
               </div>
             </Link>
           </MenuItem>
@@ -156,12 +151,12 @@ export const Header = () => {
             </Link>
           </MenuItem>
           <MenuItem className="p-0 hover:bg-transparent">
-            <Link
-              to="/cerrar-sesion"
-              className="rounded-lg transition-colors text-gray-300 flex items-center gap-x-4 py-2 px-6 flex-1"
+            <button
+              onClick={handleLogout}
+              className="rounded-lg transition-colors text-gray-300 flex items-center gap-x-4 py-2 px-6 flex-1 w-full"
             >
               <RiLogoutCircleRLine /> Cerrar sesión
-            </Link>
+            </button>
           </MenuItem>
         </Menu>
       </nav>

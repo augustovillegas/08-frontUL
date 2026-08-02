@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import apiClient from "../config/api";
 import { Card } from "./Card";
 import {
   HiOutlineChatBubbleLeftRight,
@@ -27,16 +27,15 @@ export const Analitycs = () => {
       try {
         // Peticion GET al backend para obtener metricas
         const [afiliadosResponse, mensajesResponse] = await Promise.all([
-          axios.get(buildApiUrl("/api/afiliados")),
-          axios.get(buildApiUrl("/api/consultas")),
+          apiClient.get(buildApiUrl("/api/afiliados")),
+          apiClient.get(buildApiUrl("/api/consultas")),
         ]);
         const { total: totalAfiliados = 0 } = afiliadosResponse.data || {};
         const { total: totalConsultas = 0 } = mensajesResponse.data || {};
 
         setTotal(totalAfiliados); // Guardamos el numero de afiliados
         setTotalMensajes(totalConsultas);
-      } catch (error) {
-        console.error("Error al obtener los afiliados:", error);
+      } catch {
         setError("Error al obtener los afiliados");
       } finally {
         setLoading(false);

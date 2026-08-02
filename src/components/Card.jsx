@@ -1,30 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { Menu, MenuItem, MenuButton } from "@szhsin/react-menu";
 import "@szhsin/react-menu/dist/index.css";
 import "@szhsin/react-menu/dist/theme-dark.css";
 import "@szhsin/react-menu/dist/transitions/zoom.css";
 import "@szhsin/react-menu/dist/transitions/slide.css";
-import { RiMore2Fill, RiArrowUpSFill, RiArrowDownSFill } from "react-icons/ri"; // Íconos para el menú y crecimiento
+import { RiMore2Fill, RiArrowUpSFill, RiArrowDownSFill } from "react-icons/ri";
 
-export const Card = (props) => {
-  const {
-    icon: IconComponent, // Ícono dinámico
-    mainStat, // Número principal, como afiliados o seguidores
-    description, // Descripción debajo del número (ej: "Afiliados totales")
-    growth, // Porcentaje de crecimiento
-    isGrowthPositive, // Indica si el crecimiento es positivo o negativo
-    link, // Link dinámico
-  } = props;
-
-  {
-    /* Funcionalidad de menú */
-  }
-  const [display, setDisplay] = useState("arrow");
-  const [showSubMenu, setShowSubMenu] = useState(false);
-  const handleMenuToggle = () => {
-    setShowSubMenu((prev) => !prev);
-  };
+export const Card = ({ icon: IconComponent, mainStat, description, growth, isGrowthPositive, link }) => {
 
   return (
     <div className="bg-secondary-100 p-8 rounded-xl relative">
@@ -35,16 +19,13 @@ export const Card = (props) => {
       <div className="absolute top-4 right-4">
         <Menu
           menuButton={
-            <MenuButton
-              onClick={handleMenuToggle}
-              className="flex items-center gap-x-2 p-2 hover:bg-secondary-900 rounded-lg transition-colors duration-500"
-            >
+            <MenuButton className="flex items-center gap-x-2 p-2 hover:bg-secondary-900 rounded-lg transition-colors duration-500">
               <RiMore2Fill />
             </MenuButton>
           }
           transition
           theming="dark"
-          arrow={display === "arrow"}
+          arrow
         >
           <MenuItem className="p-0 hover:bg-transparent">
             <Link
@@ -77,5 +58,14 @@ export const Card = (props) => {
       </div>
     </div>
   );
+};
+
+Card.propTypes = {
+  icon: PropTypes.elementType.isRequired,
+  mainStat: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  description: PropTypes.string.isRequired,
+  growth: PropTypes.number.isRequired,
+  isGrowthPositive: PropTypes.bool.isRequired,
+  link: PropTypes.string.isRequired,
 };
 
