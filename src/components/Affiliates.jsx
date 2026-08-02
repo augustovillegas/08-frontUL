@@ -8,6 +8,7 @@ import { formatDate } from "../utils/formatDate";
 import { AfiliadoModal } from "./AfiliadoModal";
 import { ApiLoader } from "./ApiLoader";
 
+
 export const Affiliates = () => {
   const [afiliados, setAfiliados] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -86,7 +87,7 @@ export const Affiliates = () => {
         </div>
       </div>
 
-      <div className="bg-secondary-100 px-8 py-5 rounded-xl">
+      <div className="bg-secondary-100 px-8 py-5 rounded-xl min-h-[260px]">
         <div className="hidden md:grid grid-cols-5 gap-4 mb-2 p-2">
           <h5>Acción</h5>
           <h5>Fecha</h5>
@@ -95,39 +96,42 @@ export const Affiliates = () => {
           <h5>Contacto</h5>
         </div>
 
-        {loading && <ApiLoader className="py-6" />}
-        {error && <p className="text-red-400 py-4">{error}</p>}
-
-        {filteredAffiliados.map((afiliado) => (
-          <div
-            key={afiliado._id}
-            className="grid grid-cols-1 md:grid-cols-5 gap-2 items-center mb-4 bg-secondary-900 p-2 rounded-md"
-          >
-            <div className="flex items-center justify-end md:justify-start">
-              <DropDownActions
-                onDoc={()    => openModal(afiliado, "doc")}
-                onEdit={()   => openModal(afiliado, "edit")}
-                onDelete={()  => openModal(afiliado, "delete")}
-              />
+        {loading ? (
+          <ApiLoader className="py-10" />
+        ) : error ? (
+          <p className="text-red-400 py-4">{error}</p>
+        ) : (
+          filteredAffiliados.map((afiliado) => (
+            <div
+              key={afiliado._id}
+              className="grid grid-cols-1 md:grid-cols-5 gap-2 items-center mb-4 bg-secondary-900 p-2 rounded-md"
+            >
+              <div className="flex items-center justify-end md:justify-start">
+                <DropDownActions
+                  onDoc={()   => openModal(afiliado, "doc")}
+                  onEdit={()  => openModal(afiliado, "edit")}
+                  onDelete={() => openModal(afiliado, "delete")}
+                />
+              </div>
+              <div>
+                <h5 className="md:hidden text-white font-bold">Fecha</h5>
+                <p>{formatDate(afiliado.fecha)}</p>
+              </div>
+              <div>
+                <h5 className="md:hidden text-white font-bold">Nombre</h5>
+                <p>{afiliado.nombre}</p>
+              </div>
+              <div>
+                <h5 className="md:hidden text-white font-bold">Ciudad</h5>
+                <p>{afiliado.departamento}</p>
+              </div>
+              <div>
+                <h5 className="md:hidden text-white font-bold">Contacto</h5>
+                <p>{afiliado.celular}</p>
+              </div>
             </div>
-            <div>
-              <h5 className="md:hidden text-white font-bold">Fecha</h5>
-              <p>{formatDate(afiliado.fecha)}</p>
-            </div>
-            <div>
-              <h5 className="md:hidden text-white font-bold">Nombre</h5>
-              <p>{afiliado.nombre}</p>
-            </div>
-            <div>
-              <h5 className="md:hidden text-white font-bold">Ciudad</h5>
-              <p>{afiliado.departamento}</p>
-            </div>
-            <div>
-              <h5 className="md:hidden text-white font-bold">Contacto</h5>
-              <p>{afiliado.celular}</p>
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       <PaginationControls
