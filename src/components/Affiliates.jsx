@@ -5,6 +5,7 @@ import { FaSearch } from "react-icons/fa";
 import { DownloadAffiliates } from "../utils/DownloadAffiliates";
 import { PaginationControls } from "./PaginationControls";
 import { formatDate } from "../utils/formatDate";
+import { AfiliadoModal } from "./AfiliadoModal";
 
 export const Affiliates = () => {
   const [afiliados, setAfiliados] = useState([]);
@@ -13,6 +14,7 @@ export const Affiliates = () => {
   const [pagina, setPagina] = useState(0);
   const [totalAfiliados, setTotalAfiliados] = useState(0);
   const [buscarAfiliado, setBuscarAfiliado] = useState("");
+  const [modal, setModal] = useState({ afiliado: null, mode: null });
 
   const limite = 5;
 
@@ -38,15 +40,26 @@ export const Affiliates = () => {
   const filteredAffiliados = afiliados.filter((afiliado) => {
     const term = buscarAfiliado.toLowerCase();
     return (
-      (afiliado.nombre     || "").toLowerCase().includes(term) ||
+      (afiliado.nombre      || "").toLowerCase().includes(term) ||
       (afiliado.departamento || "").toLowerCase().includes(term) ||
-      (afiliado.provincia   || "").toLowerCase().includes(term) ||
-      (afiliado.celular     || "").includes(term) ||
+      (afiliado.provincia    || "").toLowerCase().includes(term) ||
+      (afiliado.celular      || "").includes(term) ||
       formatDate(afiliado.fecha).includes(term)
     );
   });
 
   const totalPaginas = Math.ceil(totalAfiliados / limite);
+
+  const openModal  = (afiliado, mode) => setModal({ afiliado, mode });
+  const closeModal = () => setModal({ afiliado: null, mode: null });
+
+  const handleUpdated = (updated) =>
+    setAfiliados((prev) => prev.map((a) => (a._id === updated._id ? { ...a, ...updated } : a)));
+
+  const handleDeleted = (id) => {
+    setAfiliados((prev) => prev.filter((a) => a._id !== id));
+    setTotalAfiliados((t) => t - 1);
+  };
 
   return (
     <div>
@@ -100,7 +113,11 @@ export const Affiliates = () => {
             className="grid grid-cols-1 md:grid-cols-5 gap-2 items-center mb-4 bg-secondary-900 p-2 rounded-md"
           >
             <div className="flex items-center justify-end md:justify-start">
-              <DropDownActions />
+              <DropDownActions
+                onDoc={()    => openModal(afiliado, "doc")}
+                onEdit={()   => openModal(afiliado, "edit")}
+                onDelete={()  => openModal(afiliado, "delete")}
+              />
             </div>
             <div>
               <h5 className="md:hidden text-white font-bold">Fecha</h5>
@@ -126,6 +143,14 @@ export const Affiliates = () => {
         pagina={pagina}
         totalPaginas={totalPaginas}
         onPageChange={setPagina}
+      />
+
+      <AfiliadoModal
+        afiliado={modal.afiliado}
+        mode={modal.mode}
+        onClose={closeModal}
+        onUpdated={handleUpdated}
+        onDeleted={handleDeleted}
       />
     </div>
   );
