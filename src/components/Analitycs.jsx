@@ -68,101 +68,74 @@ export const Analitycs = () => {
           ))
         ) : (
           <>
-            <div>
-              {/* CARD */}
-              <Card
-                icon={HiOutlineUserGroup}
-                mainStat={total}
-                description="Afiliados totales"
-                growth={5.2}
-                isGrowthPositive={true}
-                link="/admin/perfil"
-              />
-            </div>
+            <Card
+              icon={HiOutlineUserGroup}
+              mainStat={total}
+              description="Afiliados totales"
+              growth={5.2}
+              isGrowthPositive={true}
+              link="/admin/afiliados"
+            />
 
-            <div>
-              {/* CARD */}
-              <Card
-                icon={AiFillTikTok}
-                mainStat="27,125"
-                description="Seguidores totales"
-                growth={1.2}
-                isGrowthPositive={false}
-                link="/admin/perfil"
-              />
-            </div>
+            <Card
+              icon={AiFillTikTok}
+              mainStat="27,125"
+              description="Seguidores TikTok"
+              growth={1.2}
+              isGrowthPositive={false}
+            />
 
-            <div>
-              {/* CARD */}
-              <Card
-                icon={FaInstagram}
-                mainStat="11,332"
-                description="Seguidores totales"
-                growth={3.7}
-                isGrowthPositive={true}
-                link="/admin/perfil"
-              />
-            </div>
+            <Card
+              icon={FaInstagram}
+              mainStat="11,332"
+              description="Seguidores Instagram"
+              growth={3.7}
+              isGrowthPositive={true}
+            />
 
-            <div>
-              {/* CARD */}
-              <Card
-                icon={FaFacebook}
-                mainStat="15,232"
-                description="Seguidores totales"
-                growth={8.4}
-                isGrowthPositive={true}
-                link="/admin/perfil"
-              />
-            </div>
+            <Card
+              icon={FaFacebook}
+              mainStat="15,232"
+              description="Seguidores Facebook"
+              growth={8.4}
+              isGrowthPositive={true}
+            />
 
-            <div>
-              {/* CARD */}
-              <Card
-                icon={HiOutlineChatBubbleLeftRight}
-                mainStat={totalMensajes}
-                description="Mensajes recibidos"
-                growth={2.4}
-                isGrowthPositive={true}
-                link="/admin/perfil"
-              />
-            </div>
+            <Card
+              icon={HiOutlineChatBubbleLeftRight}
+              mainStat={totalMensajes}
+              description="Mensajes recibidos"
+              growth={2.4}
+              isGrowthPositive={true}
+              link="/admin/mensajes"
+            />
 
-            <div>
-              {/* CARD */}
-              <Card
-                icon={HiOutlineChartBar}
-                mainStat={consultasPorAfiliado}
-                description="Consultas por afiliado"
-                growth={1.1}
-                isGrowthPositive={true}
-                link="/admin/perfil"
-              />
-            </div>
+            <Card
+              icon={HiOutlineChartBar}
+              mainStat={consultasPorAfiliado}
+              description="Consultas por afiliado"
+              growth={1.1}
+              isGrowthPositive={true}
+              link="/admin/mensajes"
+            />
 
-            <div>
-              {/* CARD */}
-              <Card
-                icon={HiOutlineChartPie}
-                mainStat={afiliadosPorConsulta}
-                description="Afiliados por consulta"
-                growth={0.8}
-                isGrowthPositive={true}
-                link="/admin/perfil"
-              />
-            </div>
+            <Card
+              icon={HiOutlineChartPie}
+              mainStat={afiliadosPorConsulta}
+              description="Afiliados por consulta"
+              growth={0.8}
+              isGrowthPositive={true}
+              link="/admin/afiliados"
+            />
 
-            <div>
-              {/* CARD */}
-              <Card
-                icon={HiOutlineChartBar}
-                mainStat={`${consultasCada100}%`}
-                description="Consultas cada 100 afiliados"
-                growth={0.6}
-                isGrowthPositive={true}
-                link="/admin/perfil"
-              />
-            </div>
+            <Card
+              icon={HiOutlineChartBar}
+              mainStat={`${consultasCada100}%`}
+              description="Consultas cada 100 afiliados"
+              growth={0.6}
+              isGrowthPositive={true}
+              link="/admin/mensajes"
+            />
           </>
         )}
       </div>

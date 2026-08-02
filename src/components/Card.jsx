@@ -16,27 +16,29 @@ export const Card = ({ icon: IconComponent, mainStat, description, growth, isGro
       <IconComponent className="text-4xl p-2 box-content rounded-xl absolute top-4 left-4" />
 
       {/* Menú en el lado derecho */}
-      <div className="absolute top-4 right-4">
-        <Menu
-          menuButton={
-            <MenuButton className="flex items-center gap-x-2 p-2 hover:bg-secondary-900 rounded-lg transition-colors duration-500">
-              <RiMore2Fill />
-            </MenuButton>
-          }
-          transition
-          theming="dark"
-          arrow
-        >
-          <MenuItem className="p-0 hover:bg-transparent">
-            <Link
-              to={link} // Link dinámico pasado como prop
-              className="rounded-lg transition-colors text-gray-300 flex items-center gap-x-4 p-2 flex-1"
-            >
-              Ver todos
-            </Link>
-          </MenuItem>
-        </Menu>
-      </div>
+      {link && (
+        <div className="absolute top-4 right-4">
+          <Menu
+            menuButton={
+              <MenuButton className="flex items-center gap-x-2 p-2 hover:bg-secondary-900 rounded-lg transition-colors duration-500">
+                <RiMore2Fill />
+              </MenuButton>
+            }
+            transition
+            theming="dark"
+            arrow
+          >
+            <MenuItem className="p-0 hover:bg-transparent">
+              <Link
+                to={link}
+                className="rounded-lg transition-colors text-gray-300 flex items-center gap-x-4 p-2 flex-1"
+              >
+                Ver todos
+              </Link>
+            </MenuItem>
+          </Menu>
+        </div>
+      )}
 
       {/* Estadística principal y descripción */}
       <div className="flex flex-col items-center justify-center h-40 space-y-2">
@@ -66,6 +68,6 @@ Card.propTypes = {
   description: PropTypes.string.isRequired,
   growth: PropTypes.number.isRequired,
   isGrowthPositive: PropTypes.bool.isRequired,
-  link: PropTypes.string.isRequired,
+  link: PropTypes.string,
 };
 
