@@ -102,6 +102,7 @@ const ESTADOS_CIVILES = ["soltero", "casado", "divorciado", "viudo"];
 
 const EditView = ({ a, onSuccess }) => {
   const [form, setForm] = useState({
+    nombre:      a.nombre      || "",
     correo:      a.correo      || "",
     celular:     a.celular     || "",
     domicilio:   a.domicilio   || "",
@@ -132,16 +133,16 @@ const EditView = ({ a, onSuccess }) => {
     <form onSubmit={handleSubmit} className="space-y-4 overflow-y-auto max-h-[70vh] pr-1">
       <div className="grid grid-cols-2 gap-x-4 gap-y-1 pb-3 border-b border-white/10">
         <div>
-          <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">Nombre</p>
-          <p className="text-white text-sm">{toTitleCase(a.nombre)}</p>
-        </div>
-        <div>
           <p className="text-xs text-gray-400 uppercase tracking-wide mb-1">DNI</p>
           <p className="text-white text-sm">{a.dni}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
+        <div className="col-span-2">
+          <label className="text-xs text-gray-400 uppercase tracking-wide block mb-1">Nombre completo</label>
+          <input name="nombre" type="text" value={form.nombre} onChange={handleChange} className={inputClass} />
+        </div>
         <div>
           <label className="text-xs text-gray-400 uppercase tracking-wide block mb-1">Correo</label>
           <input name="correo" type="email" value={form.correo} onChange={handleChange} className={inputClass} />
