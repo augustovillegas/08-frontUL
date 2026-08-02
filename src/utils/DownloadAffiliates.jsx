@@ -48,19 +48,12 @@ export const DownloadAffiliates = () => {
       <button
         onClick={handleDownload}
         disabled={isDownloading}
-        className="flex items-center justify-center gap-2 min-w-[160px] text-white bg-green-color/90 hover:bg-green-color px-3 py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="flex items-center gap-2 text-white bg-green-color/90 hover:bg-green-color px-3 py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
-        {isDownloading ? (
-          <>
-            <Spinner size="sm" />
-            Generando...
-          </>
-        ) : (
-          <>
-            <TiDownloadOutline className="text-2xl" />
-            Descargar Excel
-          </>
-        )}
+        {isDownloading
+          ? <Spinner size="sm" />
+          : <TiDownloadOutline className="text-2xl" />}
+        Descargar Excel
       </button>
       {error && <p className="text-red-400 text-sm">{error}</p>}
     </div>
