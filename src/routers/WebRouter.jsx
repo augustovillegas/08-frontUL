@@ -1,5 +1,10 @@
-import React, { useLayoutEffect } from "react";
-import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import React from "react";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Outlet,
+  ScrollRestoration,
+} from "react-router-dom";
 import { App } from "../App";
 import { Form } from "../components/Form";
 import { Home } from "../admin/Home";
@@ -21,62 +26,62 @@ import { FaAngleDoubleUp } from "react-icons/fa";
 import { Mailing } from "../components/Mailing";
 import { PrivateRoute } from "./PrivateRoute";
 
-const Wrapper = ({ children }) => {
-  const location = useLocation();
-  useLayoutEffect(() => {
-    window.scrollTo(0, 0);
-  }, [location.pathname]);
-  return children;
-};
+const RootLayout = () => (
+  <>
+    <ScrollRestoration getKey={(location) => location.pathname} />
+    <ScrollToTop
+      smooth
+      component={<FaAngleDoubleUp className="text-black" />}
+      style={{
+        backgroundColor: "#27AE60",
+        borderRadius: "50%",
+        right: "1rem",
+        bottom: "5rem",
+        zIndex: 50,
+      }}
+      className="flex items-center justify-center"
+    />
+    <Outlet />
+  </>
+);
 
-export const WebRouter = () => {
-  return (
-    <BrowserRouter>
-      <Wrapper>
-        <ScrollToTop
-          smooth
-          component={<FaAngleDoubleUp className="text-black" />}
-          style={{
-            backgroundColor: "#27AE60",
-            borderRadius: "50%",
-            right: "1rem",
-            bottom: "5rem",
-            zIndex: 50,
-          }}
-          className="flex items-center justify-center"
-        />
-        <Routes>
-          <Route path="/" element={<App />} />
+const router = createBrowserRouter([
+  {
+    element: <RootLayout />,
+    children: [
+      { path: "/", element: <App /> },
+      {
+        path: "/login",
+        element: <LayoutAuth />,
+        children: [
+          { index: true, element: <Login /> },
+          { path: "olvide-password", element: <ForgetPassword /> },
+          { path: "restablecer-password", element: <ResetPassword /> },
+        ],
+      },
+      {
+        path: "/admin",
+        element: (
+          <PrivateRoute>
+            <LayoutAdmin />
+          </PrivateRoute>
+        ),
+        children: [
+          { index: true, element: <Home /> },
+          { path: "perfil", element: <Profile /> },
+          { path: "mensajes", element: <Messages /> },
+          { path: "analiticas", element: <Analitycs /> },
+          { path: "afiliados", element: <Affiliates /> },
+          { path: "mailing", element: <Mailing /> },
+          { path: "social-statistic", element: <SocialStatistic /> },
+          { path: "seguidores", element: <Followers /> },
+        ],
+      },
+      { path: "/afiliarme", element: <Form /> },
+      { path: "/ayuda", element: <Help /> },
+      { path: "*", element: <NotFound /> },
+    ],
+  },
+]);
 
-          <Route path="/login" element={<LayoutAuth />}>
-            <Route index element={<Login />} />
-            <Route path="olvide-password" element={<ForgetPassword />} />
-            <Route path="restablecer-password" element={<ResetPassword />} />
-          </Route>
-
-          <Route
-            path="/admin"
-            element={
-              <PrivateRoute>
-                <LayoutAdmin />
-              </PrivateRoute>
-            }
-          >
-            <Route index element={<Home />} />
-            <Route path="perfil" element={<Profile />} />
-            <Route path="mensajes" element={<Messages />} />
-            <Route path="analiticas" element={<Analitycs />} />
-            <Route path="afiliados" element={<Affiliates />} />
-            <Route path="mailing" element={<Mailing />} />
-            <Route path="social-statistic" element={<SocialStatistic />} />
-            <Route path="seguidores" element={<Followers />} />
-          </Route>
-
-          <Route path="/afiliarme" element={<Form />} />
-          <Route path="/ayuda" element={<Help />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </Wrapper>
-    </BrowserRouter>
-  );
-};
+export const WebRouter = () => <RouterProvider router={router} />;
