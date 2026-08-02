@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import apiClient from "../config/api";
 import { Link as RouterLink } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
@@ -20,10 +20,21 @@ export const Form = () => {
   const [activeLink, setActiveLink] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [fotosDni, setFotosDni] = useState([]);
+  const [previewUrls, setPreviewUrls] = useState([]);
   const [firma, setFirma] = useState(null);
   const [uploadError, setUploadError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [signatureResetKey, setSignatureResetKey] = useState(0);
+
+  useEffect(() => {
+    if (!fotosDni || fotosDni.length === 0) {
+      setPreviewUrls([]);
+      return;
+    }
+    const urls = fotosDni.map((file) => URL.createObjectURL(file));
+    setPreviewUrls(urls);
+    return () => urls.forEach((url) => URL.revokeObjectURL(url));
+  }, [fotosDni]);
 
   const handleSetActive = (to) => {
     setActiveLink(to);
@@ -634,7 +645,7 @@ export const Form = () => {
                         {fotosDni.map((file, index) => (
                           <div key={index} className="relative group">
                             <img
-                              src={URL.createObjectURL(file)}
+                              src={previewUrls[index]}
                               alt={file.name}
                               className="w-24 h-24 object-cover rounded-lg border border-gray-500"
                             />
