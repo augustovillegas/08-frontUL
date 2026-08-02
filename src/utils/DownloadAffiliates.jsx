@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import apiClient from "../config/api";
-import { buildApiUrl } from "../config/api";
 import { TiDownloadOutline } from "react-icons/ti";
 import { Spinner } from "../components/Spinner";
 
@@ -13,13 +12,11 @@ export const DownloadAffiliates = () => {
     setIsDownloading(true);
     setError(null);
     try {
-      // Obtiene todos los afiliados (sin paginación)
       const response = await apiClient.get(
-        buildApiUrl("/api/afiliados?limite=10000&desde=0")
+        "/api/afiliados?limite=10000&desde=0"
       );
       const afiliados = response.data?.afiliados ?? [];
 
-      // Carga ExcelJS solo cuando se necesita (code splitting)
       const { generateAffiliatesExcel } = await import("./generateExcel");
       const buffer = await generateAffiliatesExcel(afiliados);
 
@@ -37,8 +34,10 @@ export const DownloadAffiliates = () => {
       link.click();
       link.remove();
       URL.revokeObjectURL(url);
-    } catch {
-      setError("No se pudo generar el archivo. Intentá de nuevo.");
+    } catch (err) {
+      console.error("[DownloadAffiliates]", err);
+      const msg = err?.response?.data?.msg || err?.message || "Error desconocido";
+      setError(`No se pudo generar el archivo: ${msg}`);
     } finally {
       setIsDownloading(false);
     }
@@ -49,7 +48,7 @@ export const DownloadAffiliates = () => {
       <button
         onClick={handleDownload}
         disabled={isDownloading}
-        className="flex items-center gap-2 text-white bg-green-color/90 hover:bg-green-color p-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="flex items-center justify-center gap-2 min-w-[160px] text-white bg-green-color/90 hover:bg-green-color px-3 py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         {isDownloading ? (
           <>

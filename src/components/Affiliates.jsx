@@ -38,9 +38,10 @@ export const Affiliates = () => {
   const filteredAffiliados = afiliados.filter((afiliado) => {
     const term = buscarAfiliado.toLowerCase();
     return (
-      afiliado.nombre.toLowerCase().includes(term) ||
-      afiliado.departamento.toLowerCase().includes(term) ||
-      afiliado.celular.includes(term) ||
+      (afiliado.nombre     || "").toLowerCase().includes(term) ||
+      (afiliado.departamento || "").toLowerCase().includes(term) ||
+      (afiliado.provincia   || "").toLowerCase().includes(term) ||
+      (afiliado.celular     || "").includes(term) ||
       formatDate(afiliado.fecha).includes(term)
     );
   });

@@ -1,5 +1,15 @@
 import ExcelJS from "exceljs";
 
+const toTitleCase = (str) => {
+  if (!str) return "";
+  return str
+    .trim()
+    .replace(/\s+/g, " ")
+    .split(" ")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(" ");
+};
+
 // Paleta Democratik
 const COLORS = {
   green:       "27AE60",
@@ -146,16 +156,16 @@ export async function generateAffiliatesExcel(afiliados) {
       fecha:        a.fecha
         ? new Date(a.fecha).toLocaleDateString("es-ES", { day: "2-digit", month: "2-digit", year: "numeric" })
         : "",
-      nombre:       a.nombre       || "",
+      nombre:       toTitleCase(a.nombre),
       dni:          a.dni          || "",
-      correo:       a.correo       || "",
+      correo:       (a.correo      || "").toLowerCase(),
       celular:      a.celular      || "",
-      domicilio:    a.domicilio    || "",
+      domicilio:    toTitleCase(a.domicilio),
       ocupacion:    a.ocupacion    || "",
       estadoCivil:  a.estadoCivil  || "",
       pais:         a.pais         || "",
-      provincia:    a.provincia    || "",
-      departamento: a.departamento || "",
+      provincia:    toTitleCase(a.provincia),
+      departamento: toTitleCase(a.departamento),
     };
 
     const dataRow = sheet.addRow(rowData);
